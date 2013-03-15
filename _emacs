@@ -14,6 +14,12 @@
 (tool-bar-mode 0)
 (menu-bar-mode 0)
 
+;; basic colors (for GUIs and evil terminals)
+(set-background-color "black")
+(set-foreground-color "green")
+(set-face-foreground 'region "white")
+(set-face-background 'region "SkyBlue4")
+
 ;; highlight the current line
 (setq highlight-current-line-globally t)
 (require 'highlight-current-line)
