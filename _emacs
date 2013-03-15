@@ -49,3 +49,11 @@
 (global-set-key (kbd "\"") 'skeleton-pair-insert-maybe)
 (global-set-key (kbd "'") 'skeleton-pair-insert-maybe)
 
+;; osx-specific instructions
+(defun darwinp ()
+  (string-match "darwin" system-configuration))
+
+(when (darwinp)
+  ;; make apple-command be the meta modifier
+  (setq mac-command-modifier 'meta))
+
