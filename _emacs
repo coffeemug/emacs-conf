@@ -11,7 +11,6 @@
 (setq initial-scratch-message "")
 
 ;; turn off unnecessary UI
-(tool-bar-mode 0)
 (menu-bar-mode 0)
 
 ;; basic colors (for GUIs and evil terminals)
@@ -49,6 +48,10 @@
 (global-set-key (kbd "\"") 'skeleton-pair-insert-maybe)
 (global-set-key (kbd "'") 'skeleton-pair-insert-maybe)
 
+;; make regions behave like every other sane editor on the planet
+;; (default in newever versions of emacs, but not everywhere)
+(transient-mark-mode t)
+
 ;; osx-specific instructions
 (defun darwinp ()
   (string-match "darwin" system-configuration))
@@ -57,3 +60,6 @@
   ;; make apple-command be the meta modifier
   (setq mac-command-modifier 'meta))
 
+;; graphics mode specific instructions
+(when (display-graphic-p)
+  (tool-bar-mode 0))
