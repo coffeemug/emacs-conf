@@ -13,6 +13,9 @@
 ;; turn off unnecessary UI
 (menu-bar-mode 0)
 
+;; make yes/no less annoying
+(defalias 'yes-or-no-p 'y-or-n-p)
+
 ;; basic colors (for GUIs and evil terminals)
 (set-background-color "black")
 (set-foreground-color "green")
