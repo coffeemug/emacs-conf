@@ -34,6 +34,7 @@
 (require 'ido)
 (ido-mode t)
 (setq confirm-nonexistent-file-or-buffer nil)
+(setq ido-create-new-buffer 'always)
 
 ;; rebind incremental search to regex
 (global-set-key [(control s)] 'isearch-forward-regexp)
