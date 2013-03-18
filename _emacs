@@ -1,6 +1,9 @@
 ;; load path
 (add-to-list 'load-path "~/emacs-conf/")
 
+;; load theme
+(load-theme 'wombat)
+
 ;; set frame title to file name
 (setq frame-title-format "%b")
 
