@@ -44,6 +44,9 @@
 (global-set-key [(control meta r)] 'isearch-backward)
 (global-set-key [(control meta %)] 'query-replace)
 
+;; rebind C-x C-m to M-x (Steve Yegge was right)
+(global-set-key [(control x) (control m)] 'execute-extended-command)
+
 ;; type brackets in pairs
 (setq skeleton-pair t)
 (global-set-key (kbd "[") 'skeleton-pair-insert-maybe)
@@ -85,3 +88,4 @@
 (autoload 'markdown-mode "markdown-mode"
    "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+
