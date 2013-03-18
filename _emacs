@@ -81,3 +81,7 @@
 ;; eshell shouldn't ask about saving history on exit
 (setq eshell-save-history-on-exit t)
 
+;; markdown mode (err, I do write a lot of markdown)
+(autoload 'markdown-mode "markdown-mode"
+   "Major mode for editing Markdown files" t)
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
