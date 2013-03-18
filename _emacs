@@ -23,6 +23,7 @@
 (set-face-background 'region "SkyBlue4")
 
 ;; highlight the current line
+;; TODO: turn it off for things like eshell, inferior modes, etc.
 (setq highlight-current-line-globally t)
 (require 'highlight-current-line)
 (highlight-current-line-set-bg-color "dark slate gray")
