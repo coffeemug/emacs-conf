@@ -67,3 +67,7 @@
 ;; graphics mode specific instructions
 (when (display-graphic-p)
   (tool-bar-mode 0))
+
+;; eshell shouldn't ask about saving history on exit
+(setq eshell-save-history-on-exit t)
+
