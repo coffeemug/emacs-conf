@@ -52,6 +52,7 @@
 (global-set-key [(control x) (control m)] 'execute-extended-command)
 
 ;; type brackets in pairs
+;; TODO: only turn on pairing in programming modes
 (setq skeleton-pair t)
 (global-set-key (kbd "[") 'skeleton-pair-insert-maybe)
 (global-set-key (kbd "(") 'skeleton-pair-insert-maybe)
