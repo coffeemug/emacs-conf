@@ -58,7 +58,6 @@
 (global-set-key (kbd "(") 'skeleton-pair-insert-maybe)
 (global-set-key (kbd "{") 'skeleton-pair-insert-maybe)
 (global-set-key (kbd "\"") 'skeleton-pair-insert-maybe)
-(global-set-key (kbd "'") 'skeleton-pair-insert-maybe)
 
 ;; customize isearch to always end at the beginning of search word
 (add-hook 'isearch-mode-end-hook 'my-goto-match-beginning)
