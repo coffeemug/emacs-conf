@@ -1,5 +1,5 @@
 ;; load path
-(add-to-list 'load-path "~/emacs-conf/")
+(add-to-list 'load-path "~/projects/emacs-conf/")
 
 ;; load theme
 (load-theme 'wombat)
