@@ -123,3 +123,5 @@
  ;; If there is more than one, they won't work right.
  )
 
+;; dumb-jump binding
+(global-set-key [(meta .)] 'dumb-jump-go)
