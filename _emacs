@@ -93,5 +93,27 @@
    "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
+;; "twitter" mode -- show burndown of 140 chars/peragraph (+ how many
+;; 140 char sentences are written)
+(defun paragraph-burndown-modeline-str ()
+  (let* ((beg (save-excursion
+		(move-to-left-margin)
+		(forward-paragraph -1)
+		(point)))
+	 (end (save-excursion
+		(move-to-left-margin)
+		(forward-paragraph +1)
+		(point)))
+	 (pwidth (string-width (buffer-substring-no-properties beg end)))
+	 (ntweets (/ pwidth 140))
+	 (nchars (- 140 (% pwidth 140))))
+    (if (zerop (string-width (thing-at-point 'line t)))
+	"0x/0"
+      (format "%sx/%s" ntweets nchars))))
+(defun paragraph-burndown-modeline-hook ()
+  (setq mode-line-format
+	(append mode-line-format '((:eval (paragraph-burndown-modeline-str))))))
+(add-hook 'markdown-mode-hook 'paragraph-burndown-modeline-hook)
+
 ;; other window
 (global-set-key [(control o)] 'other-window)
