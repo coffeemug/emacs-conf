@@ -91,5 +91,7 @@
 ;; markdown mode (err, I do write a lot of markdown)
 (autoload 'markdown-mode "markdown-mode"
    "Major mode for editing Markdown files" t)
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
+;; other window
+(global-set-key [(control o)] 'other-window)
