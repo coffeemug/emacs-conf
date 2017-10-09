@@ -123,7 +123,11 @@
 	 (nchars (- 140 (% pwidth 140))))
     (if (zerop (string-width (thing-at-point 'line t)))
 	"0x/140"
-      (format "%sx/%s" ntweets nchars))))
+      (concat
+       (format "%sx/" ntweets)
+       (if (<= nchars 20)
+	   (propertize (format "%s" nchars) 'face 'warning)
+	 (format "%s" nchars))))))
 (defun paragraph-burndown-modeline-hook ()
   (setq mode-line-format
 	(append mode-line-format '((:eval (paragraph-burndown-modeline-str))))))
