@@ -103,3 +103,7 @@
 	(append mode-line-format '((:eval (paragraph-burndown-modeline-str))))))
 (add-hook 'markdown-mode-hook 'paragraph-burndown-modeline-hook)
 
+;; yaml-mode
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+
