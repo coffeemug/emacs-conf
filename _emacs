@@ -8,13 +8,19 @@
 
 ;; Some niceties
 (load-theme 'wombat)               ; load theme
-(setq frame-title-format "%b")     ; set frame title to file name
-(setq inhibit-startup-message t)   ; turn off splash screen
-(setq initial-scratch-message "")  ; turn off initial scratch buffer message
 (menu-bar-mode 0)                  ; turn off unnecessary UI
-(defalias 'yes-or-no-p 'y-or-n-p)  ; make yes/no less annoying
 (show-paren-mode t)                ; enable paren-matching
 (transient-mark-mode t)            ; make regions sane
+(electric-pair-mode t)             ; type brackets in pairs
+(ido-mode t)                       ; load IDO for quick file/buffer switching
+
+;; Some more niceties
+(setq frame-title-format "%b")                   ; set frame title to file name
+(setq inhibit-startup-message t)                 ; turn off splash screen
+(setq initial-scratch-message "")                ; turn off initial scratch buffer message
+(setq confirm-nonexistent-file-or-buffer nil)    ; make IDO sane
+(setq ido-create-new-buffer 'always)             ; make IDO sane
+(defalias 'yes-or-no-p 'y-or-n-p)                ; make yes/no less annoying
 
 ;; basic colors (for GUIs and evil terminals)
 (set-background-color "black")
@@ -22,31 +28,16 @@
 (set-face-foreground 'region "white")
 (set-face-background 'region "SkyBlue4")
 
-;; rebind incremental search to regex
+;; nicer keybindings
 (global-set-key [(control s)] 'isearch-forward-regexp)
 (global-set-key [(control r)] 'isearch-backward-regexp)
 (global-set-key [(meta %)] 'query-replace-regexp)
-
-;; window management
 (global-set-key [(control o)] 'other-window)
-
-;; type brackets in pairs
-(global-set-key (kbd "[") 'skeleton-pair-insert-maybe)
-(global-set-key (kbd "(") 'skeleton-pair-insert-maybe)
-(global-set-key (kbd "{") 'skeleton-pair-insert-maybe)
-(global-set-key (kbd "\"") 'skeleton-pair-insert-maybe)
-(setq skeleton-pair t)
 
 ;; highlight the current line
 (setq highlight-current-line-globally t)
 (require 'highlight-current-line)
 (highlight-current-line-set-bg-color "dark slate gray")
-
-;; load IDO for quick file/buffer switching
-(require 'ido)
-(ido-mode t)
-(setq confirm-nonexistent-file-or-buffer nil)
-(setq ido-create-new-buffer 'always)
 
 ;; customize isearch to always end at the beginning of search word
 (add-hook 'isearch-mode-end-hook 'my-goto-match-beginning)
