@@ -20,6 +20,7 @@
 (setq initial-scratch-message "")                ; turn off initial scratch buffer message
 (setq confirm-nonexistent-file-or-buffer nil)    ; make IDO sane
 (setq ido-create-new-buffer 'always)             ; make IDO sane
+(setq sentence-end-double-space nil)             ; make filling nicer
 (defalias 'yes-or-no-p 'y-or-n-p)                ; make yes/no less annoying
 
 ;; basic colors (for GUIs and evil terminals)
@@ -93,6 +94,16 @@
   (setq mode-line-format
 	(append mode-line-format '((:eval (paragraph-burndown-modeline-str))))))
 (add-hook 'markdown-mode-hook 'paragraph-burndown-modeline-hook)
+
+;; unfill paragraph
+(defun unfill-paragraph (&optional region)
+  "Takes a multi-line paragraph and makes it into a single line of text."
+  (interactive (progn (barf-if-buffer-read-only) '(t)))
+  (let ((fill-column (point-max))
+        ;; This would override `fill-column' if it's an integer.
+        (emacs-lisp-docstring-fill-column t))
+    (fill-paragraph nil region)))
+(global-set-key [(control q)] 'unfill-paragraph)
 
 ;; yaml-mode
 (require 'yaml-mode)
