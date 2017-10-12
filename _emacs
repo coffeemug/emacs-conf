@@ -18,6 +18,7 @@
 (setq inhibit-startup-message t)                 ; turn off splash screen
 (setq initial-scratch-message "")                ; turn off initial scratch buffer message
 (setq sentence-end-double-space nil)             ; make filling nicer
+(setq ring-bell-function 'ignore)                ; turn off the bell
 (defalias 'yes-or-no-p 'y-or-n-p)                ; make yes/no less annoying
 
 ;; basic colors (for GUIs and evil terminals)
