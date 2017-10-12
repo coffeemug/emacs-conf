@@ -12,14 +12,11 @@
 (show-paren-mode t)                ; enable paren-matching
 (transient-mark-mode t)            ; make regions sane
 (electric-pair-mode t)             ; type brackets in pairs
-(ido-mode t)                       ; load IDO for quick file/buffer switching
 
 ;; Some more niceties
 (setq frame-title-format "%b")                   ; set frame title to file name
 (setq inhibit-startup-message t)                 ; turn off splash screen
 (setq initial-scratch-message "")                ; turn off initial scratch buffer message
-(setq confirm-nonexistent-file-or-buffer nil)    ; make IDO sane
-(setq ido-create-new-buffer 'always)             ; make IDO sane
 (setq sentence-end-double-space nil)             ; make filling nicer
 (defalias 'yes-or-no-p 'y-or-n-p)                ; make yes/no less annoying
 
@@ -28,6 +25,36 @@
 (set-foreground-color "green")
 (set-face-foreground 'region "white")
 (set-face-background 'region "SkyBlue4")
+
+;; Configure IDO
+(ido-mode 1)
+(ido-everywhere 1)
+(setq confirm-nonexistent-file-or-buffer nil)
+(setq ido-create-new-buffer 'always)
+
+;; Enable IDO in as many places as possible
+(require 'ido-completing-read+)
+(ido-ubiquitous-mode 1)
+(require 'crm-custom)
+(crm-custom-mode 1)
+
+;; Prettify it
+(require 'ido-grid-mode)
+(ido-grid-mode 1)
+(setq ido-grid-mode-prefix-scrolls t)
+
+(set-face-foreground 'ido-first-match "white")
+(set-face-background 'ido-first-match "RoyalBlue3")
+(set-face-attribute 'ido-first-match nil :weight 'normal)
+
+(set-face-foreground 'ido-grid-mode-match "#a0a8b0")
+(set-face-background 'ido-grid-mode-match "#384048")
+(set-face-attribute 'ido-grid-mode-match nil :underline nil)
+
+;; smex
+(require 'smex)
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
 
 ;; nicer keybindings
 (global-set-key [(control s)] 'isearch-forward-regexp)
@@ -108,4 +135,8 @@
 ;; yaml-mode
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+
+;; moving buffers
+(global-set-key [(meta left)] 'buf-move-left)
+(global-set-key [(meta right)] 'buf-move-right)
 
