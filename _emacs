@@ -62,6 +62,7 @@
 (global-set-key [(control r)] 'isearch-backward-regexp)
 (global-set-key [(meta %)] 'query-replace-regexp)
 (global-set-key [(control o)] 'other-window)
+(global-set-key (kbd "M-=") 'count-words)
 
 ;; highlight the current line
 (setq highlight-current-line-globally t)
