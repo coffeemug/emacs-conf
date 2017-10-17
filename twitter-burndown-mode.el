@@ -24,9 +24,9 @@
 	 (ntweets (/ pwidth 140))
 	 (nchars (- 140 (% pwidth 140))))
     (if (zerop (string-width (thing-at-point 'line t)))
-	"0x/140"
+	" 0x/140"
       (concat
-       (format "%dx/" ntweets)
+       (format " %dx/" ntweets)
        (if (<= nchars 20)
 	   (propertize (format "%s" nchars) 'face 'warning)
 	 (format "%d" nchars))))))
