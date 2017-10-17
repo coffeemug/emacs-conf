@@ -1,9 +1,9 @@
 
-;;; twitter-burndown-mode.el --- show twitter-style burndown in modeline
-(provide 'twitter-burndown-mode)
+;;; burndown-mode.el --- show twitter-style burndown in modeline
+(provide 'burndown-mode)
 
 ;; define our mode-line expression
-(setq twitter-burndown-mode-mode-line-expr '(:eval (paragraph-burndown-modeline-str)))
+(setq burndown-mode-mode-line-expr '(:eval (paragraph-burndown-modeline-str)))
 
 ;; twitter-style burndown -- count down from 140 chars/peragraph (+
 ;; how many 140 char sentences are written)
@@ -32,18 +32,18 @@
 	 (format "%d" nchars))))))
 
 ;; setup/cleanup
-(defun setup-twitter-burndown-mode ()
+(defun setup-burndown-mode ()
   (setq mode-line-format
 	(append mode-line-format
-		(list twitter-burndown-mode-mode-line-expr))))
+		(list burndown-mode-mode-line-expr))))
 
-(defun cleanup-twitter-burndown-mode ()
-    (setq mode-line-format (delete twitter-burndown-mode-mode-line-expr mode-line-format)))
+(defun cleanup-burndown-mode ()
+    (setq mode-line-format (delete burndown-mode-mode-line-expr mode-line-format)))
 
 ;; Mode definition
-(define-minor-mode twitter-burndown-mode "Show twitter-style burndown in modeline"
+(define-minor-mode burndown-mode "Show twitter-style burndown in modeline"
   nil nil nil
-  (if twitter-burndown-mode
-      (setup-twitter-burndown-mode)
-    (cleanup-twitter-burndown-mode)))
+  (if burndown-mode
+      (setup-burndown-mode)
+    (cleanup-burndown-mode)))
 

@@ -99,8 +99,8 @@
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
 ;; Setup burndown mode for markdown
-(require 'twitter-burndown-mode)
-(add-hook 'markdown-mode-hook 'twitter-burndown-mode)
+(require 'burndown-mode)
+(add-hook 'markdown-mode-hook 'burndown-mode)
 
 ;; unfill paragraph
 (defun unfill-paragraph (&optional region)
