@@ -114,8 +114,8 @@
 
 ;; Also, timers...
 (require 'countdown)
-(global-set-key (kbd "C-c t") 'countdown-start)
-(global-set-key (kbd "C-c C-t k") 'countdown-stop)
+(global-set-key (kbd "C-c C-x 0") 'countdown-start)
+(global-set-key (kbd "C-c C-x _") 'countdown-stop)
 
 ;; yaml-mode
 (require 'yaml-mode)
