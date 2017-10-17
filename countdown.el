@@ -35,6 +35,10 @@
   :prefix "countdown-"
   :group 'timer)
 
+(defcustom countdown-mode-default-minutes 25
+  "Default minutes"
+  :type 'number)
+
 (defcustom countdown-mode-line-sign "●"
   "Sign of timer"
   :type 'string)
@@ -87,19 +91,23 @@
 
 ;;;###autoload
 (cl-defun countdown-start (&optional minutes)
-  (interactive)
-  
+  (interactive "Pminutes")
+
+  (unless (null minutes)
+    (setq minutes (prefix-numeric-value minutes)))
+
   ;; if the timer already exists, pause it and bail
   (when countdown--timer
     (cancel-timer countdown--timer)
     (setq countdown--timer nil)
-    (cl-return-from countdown-start))
-
-  ;; set the timer length (unless it's already been set)
-  (when (= countdown--remainder-seconds 0)
     (unless minutes
-      (setq minutes (read-number "How many minutes? " 25)))
+      (cl-return-from countdown-start)))
+
+  ;; if the user passed an explicit length, set the timer
+  (when minutes
     (countdown--set-remainder-second minutes))
+  (when (= countdown--remainder-seconds 0)
+    (countdown--set-remainder-second countdown-mode-default-minutes))
 
   ;; start the timer
   (setq countdown--timer (run-with-timer 0 1 'countdown--tick)))
