@@ -112,6 +112,11 @@
     (fill-paragraph nil region)))
 (global-set-key [(control q)] 'unfill-paragraph)
 
+;; Also, timers...
+(require 'countdown)
+(global-set-key (kbd "C-c t") 'countdown-start)
+(global-set-key (kbd "C-c C-t k") 'countdown-stop)
+
 ;; yaml-mode
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))

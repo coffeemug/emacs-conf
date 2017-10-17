@@ -1,8 +1,8 @@
-;;; mode-line-timer.el --- Timer in mode-line -*- lexical-binding: t; -*-
+;;; countdown.el --- Timer in mode-line -*- lexical-binding: t; -*-
 
 ;; Author: Syohei YOSHIDA(syohex@gmail.com)
 ;; Version: 0.01
-;; URL: https://github.com:/syohex/emacs-mode-line-timer
+;; URL: https://github.com:/syohex/emacs-countdown
 ;; Package-Requires: ((emacs "24.4"))
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -17,25 +17,25 @@
 
 ;;; Commentary:
 
-;; mode-line-timer.el provides showing timer in mode-line.
+;; countdown.el provides showing timer in mode-line.
 ;;
 ;; Start timer
-;;   M-x mode-line-timer-start
+;;   M-x countdown-start
 ;;
 ;; Stop timer
-;;   M-x mode-line-timer-stop
+;;   M-x countdown-stop
 
 ;;; Code:
 
 (require 'cl-lib)
 (require 'subr-x)
 
-(defgroup mode-line-timer nil
+(defgroup countdown nil
   "Simple timer"
-  :prefix "mode-line-timer-"
+  :prefix "countdown-"
   :group 'timer)
 
-(defcustom mode-line-timer-mode-line-sign "●"
+(defcustom countdown-mode-line-sign "●"
   "Sign of timer"
   :type 'string)
 
@@ -43,7 +43,7 @@
   "Hook run after timer expired."
   :type 'hook)
 
-(defface mode-line-timer-sign
+(defface countdown-sign
   '((((class color) (min-colors 88) (background light))
      :foreground "blue")
     (((class color) (background dark))
@@ -51,67 +51,73 @@
     (t nil))
   "mode-line-face")
 
-(defface mode-line-timer-timer
+(defface countdown-timer
   '((t (:weight bold)))
   "mode-line-face")
 
-(defvar mode-line-timer--timer nil)
-(defvar mode-line-timer--remainder-seconds 0)
-(defvar mode-line-timer--mode-line "")
+(defvar countdown--timer nil)
+(defvar countdown--remainder-seconds 0)
+(defvar countdown--mode-line "")
 
-(defsubst mode-line-timer--time-to-string (seconds)
+(defsubst countdown--time-to-string (seconds)
   (format "%02d:%02d" (/ seconds 60) (mod seconds 60)))
 
-(defun mode-line-timer--propertize-mode-line ()
-  (unless (string-empty-p mode-line-timer--mode-line)
-    (concat (propertize mode-line-timer-mode-line-sign 'face 'mode-line-timer-sign)
-            (propertize mode-line-timer--mode-line 'face 'mode-line-timer-timer))))
+(defun countdown--propertize-mode-line ()
+  (unless (string-empty-p countdown--mode-line)
+    (concat (propertize countdown-mode-line-sign 'face 'countdown-sign)
+            (propertize countdown--mode-line 'face 'countdown-timer))))
 
-(defun mode-line-timer--set-mode-line ()
-  (setq mode-line-timer--mode-line
-        (mode-line-timer--time-to-string mode-line-timer--remainder-seconds)))
+(defun countdown--set-mode-line ()
+  (setq countdown--mode-line
+        (countdown--time-to-string countdown--remainder-seconds)))
 
-(defun mode-line-timer--tick ()
-  (let ((remainder-seconds (1- mode-line-timer--remainder-seconds)))
+(defun countdown--tick ()
+  (let ((remainder-seconds (1- countdown--remainder-seconds)))
     (if (< remainder-seconds 0)
         (progn
-          (mode-line-timer-stop)
+          (countdown-stop)
           (run-hooks 'mode-line-expire-hook))
-      (cl-decf mode-line-timer--remainder-seconds)
-      (mode-line-timer--set-mode-line)
-      (mode-line-timer--propertize-mode-line)
+      (cl-decf countdown--remainder-seconds)
+      (countdown--set-mode-line)
+      (countdown--propertize-mode-line)
       (force-mode-line-update))))
 
-(defsubst mode-line-timer--set-remainder-second (minutes)
-  (setq mode-line-timer--remainder-seconds (* 60 minutes)))
+(defsubst countdown--set-remainder-second (minutes)
+  (setq countdown--remainder-seconds (* 60 minutes)))
 
 ;;;###autoload
-(defun mode-line-timer-start (&optional minutes)
+(cl-defun countdown-start (&optional minutes)
   (interactive)
-  (when mode-line-timer--timer
-    (error "Already start timer!!"))
-  (unless minutes
-    (setq minutes (read-number "How long minutes " 25)))
-  (mode-line-timer--set-remainder-second minutes)
-  (setq mode-line-timer--timer (run-with-timer 0 1 'mode-line-timer--tick)))
+  
+  ;; if the timer already exists, pause it and bail
+  (when countdown--timer
+    (cancel-timer countdown--timer)
+    (setq countdown--timer nil)
+    (cl-return-from countdown-start))
 
-(defun mode-line-timer-stop ()
-  (interactive)
-  (cancel-timer mode-line-timer--timer)
-  (setq mode-line-timer--timer nil
-        mode-line-timer--mode-line "")
-  (force-mode-line-update))
+  ;; set the timer length (unless it's already been set)
+  (when (= countdown--remainder-seconds 0)
+    (unless minutes
+      (setq minutes (read-number "How many minutes? " 25)))
+    (countdown--set-remainder-second minutes))
 
-(defun mode-line-timer-done ()
+  ;; start the timer
+  (setq countdown--timer (run-with-timer 0 1 'countdown--tick)))
+
+(defun countdown-stop ()
   (interactive)
-  (mode-line-timer-stop)
+  (when countdown--timer
+    (cancel-timer countdown--timer))
+  (setq countdown--timer nil
+        countdown--mode-line ""
+	countdown--remainder-seconds 0)
+  (force-mode-line-update)
   (run-hooks 'mode-line-expire-hook))
 
-(unless (member '(:eval (mode-line-timer--propertize-mode-line)) mode-line-format)
+(unless (member '(:eval (countdown--propertize-mode-line)) mode-line-format)
   (setq-default mode-line-format
-                (cons '(:eval (mode-line-timer--propertize-mode-line))
-                      mode-line-format)))
+                (append mode-line-format '((:eval (countdown--propertize-mode-line))))))
 
-(provide 'mode-line-timer)
+(provide 'countdown)
 
-;;; mode-line-timer.el ends here
+;;; countdown.el ends here
