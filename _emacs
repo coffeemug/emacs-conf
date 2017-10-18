@@ -32,6 +32,7 @@
 (ido-everywhere 1)
 (setq confirm-nonexistent-file-or-buffer nil)
 (setq ido-create-new-buffer 'always)
+(setq ido-use-virtual-buffers t)
 
 ;; Enable IDO in as many places as possible
 (require 'ido-completing-read+)
