@@ -2,6 +2,20 @@
 ;;; burndown-mode.el --- show twitter-style burndown in modeline
 (provide 'burndown-mode)
 
+;; faces
+(defface burndown-info
+  '((t (:foreground "green" :weight bold)))
+  "Burndown info" :group 'burndown-mode)
+(defface burndown-warning1
+  '((t (:foreground "yellow" :weight bold)))
+  "Burndown warning 1" :group 'burndown-mode)
+(defface burndown-warning2
+  '((t (:foreground "orange" :weight bold)))
+  "Burndown warning 2" :group 'burndown-mode)
+(defface burndown-warning3
+  '((t (:foreground "red" :weight bold)))
+  "Burndown warning 3" :group 'burndown-mode)
+
 ;; define our mode-line expression
 (setq burndown-mode-mode-line-expr '(:eval (burndown-str)))
 
@@ -35,10 +49,10 @@
       (concat
        " c:"
        (propertize (format "%s" nchars) 'face
-		   (cond ((<= nchars 10) 'compilation-mode-line-fail)
-			 ((<= nchars 35) 'compilation-warning)
-			 ((<= nchars 70) 'compilation-error)
-			 (t 'compilation-info)))
+		   (cond ((<= nchars 10) 'burndown-warning3)
+			 ((<= nchars 35) 'burndown-warning2)
+			 ((<= nchars 70) 'burndown-warning1)
+			 (t 'burndown-info)))
        (format "/%dx" ntweets)))))
 
 ;; count down buffer word burndown (from 500 + how many 500 words are
