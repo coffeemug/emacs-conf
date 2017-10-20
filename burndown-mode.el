@@ -34,9 +34,11 @@
 	  (setq nchars 140))
       (concat
        " c:"
-       (if (<= nchars 20)
-	   (propertize (format "%s" nchars) 'face 'warning)
-	 (format "%d" nchars))
+       (propertize (format "%s" nchars) 'face
+		   (cond ((<= nchars 10) 'compilation-mode-line-fail)
+			 ((<= nchars 35) 'compilation-warning)
+			 ((<= nchars 70) 'compilation-error)
+			 (t 'compilation-info)))
        (format "/%dx" ntweets)))))
 
 ;; count down buffer word burndown (from 500 + how many 500 words are
