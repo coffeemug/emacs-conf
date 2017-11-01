@@ -6,6 +6,11 @@
 ;; My own custom stuff
 (add-to-list 'load-path "~/projects/emacs-conf/")
 
+(custom-set-variables
+ '(package-selected-packages (quote (slime))))
+
+(custom-set-faces)
+
 ;; Some niceties
 (load-theme 'wombat)               ; load theme
 (menu-bar-mode 0)                  ; turn off unnecessary UI
@@ -126,4 +131,8 @@
 ;; moving buffers
 (global-set-key [(meta left)] 'buf-move-left)
 (global-set-key [(meta right)] 'buf-move-right)
+
+;; playing with slime
+(setq inferior-lisp-program "/usr/local/bin/sbcl")
+(add-to-list 'slime-contribs 'slime-repl)
 
