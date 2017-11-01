@@ -15,7 +15,7 @@
    (draft-propertize-prompt 140))
   (goto-char (point-max))
   (setq lui-input-function #'lui-insert)
-  (add-hook 'after-change-functions #'draft-update-prompt))
+  (add-hook 'after-change-functions #'draft-update-prompt nil t))
 
 (defun draft-propertize-prompt (nchars)
   (concat
@@ -36,7 +36,7 @@
 (defun draft-lui-input ()
   (buffer-substring lui-input-marker (point-max)))
 
-(define-derived-mode draft-mode lui-mode "draft"
+(define-derived-mode draft-mode lui-mode "Draft"
   ""
   (draft-init))
 
