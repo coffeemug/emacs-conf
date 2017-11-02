@@ -1,21 +1,44 @@
 (require 'lui)
 
 (defface draft-prompt-info
-  '((t (:foreground "lightblue" :weight bold)))
+  '((t (:foreground "#8ac6f2" :weight bold)))
   "Draft prompt info" :group 'draft-mode)
 (defface draft-prompt-warning
   '((t (:foreground "red" :weight bold)))
   "Draft prompt warning" :group 'draft-mode)
-(defface draft-prompt-separator
+(defface draft-separator
   '((t (:foreground "lightgrey")))
-  "Draft prompt separator" :group 'draft-mode)
+  "Draft separator" :group 'draft-mode)
 
 (defun draft-init ()
   (lui-set-prompt
    (draft-propertize-prompt 140))
   (goto-char (point-max))
-  (setq lui-input-function #'lui-insert)
+  (setq-local lui-paragraph-count 0)
+  (setq-local lui-input-function #'draft-insert)
+  (setq-local lui-time-stamp-only-when-changed-p nil)
+  (setq-local lui-fill-type 'variable)
+  (set-face-attribute 'lui-time-stamp-face nil
+		      :foreground "orange"
+		      :weight 'normal)
   (add-hook 'after-change-functions #'draft-update-prompt nil t))
+
+(defun draft-insert (txt)
+  (if (string= "" txt)
+      (progn
+	(setq-local lui-time-stamp-format "")
+	(lui-insert ""))
+    (progn
+      (setq-local lui-paragraph-count
+		  (+ lui-paragraph-count 1))
+      (setq-local lui-time-stamp-format
+		  (format "/%d" lui-paragraph-count))
+      (lui-insert
+       (concat
+	(propertize "* " 'face 'draft-separator)
+	txt)))))
+
+(setq lui-time-stamp-format "[%H:%M]")
 
 (defun draft-propertize-prompt (nchars)
   (concat
@@ -24,7 +47,7 @@
 		   'draft-prompt-warning
 		 'draft-prompt-info))
    (propertize "> " 'face
-	       'draft-prompt-separator)))
+	       'draft-separator)))
 
 (defun draft-update-prompt (beg end len)
   (when (and lui-input-marker
