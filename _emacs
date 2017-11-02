@@ -136,3 +136,7 @@
 (setq inferior-lisp-program "/usr/local/bin/sbcl")
 (add-to-list 'slime-contribs 'slime-repl)
 
+;; draft mode
+(require 'draft-mode)
+(setq draft-store-directory "~/Dropbox/drafts")
+
