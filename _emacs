@@ -184,6 +184,13 @@
 (define-key Buffer-menu-mode-map "k" 'previous-line)
 (define-key Buffer-menu-mode-map "j" 'next-line)
 
+;; while we're at it, make it easy to create new buffers
+(global-set-key (kbd "C-x C-n")
+		(lambda ()
+		  (interactive)
+		  (switch-to-buffer
+		   (generate-new-buffer "*scratch*"))))
+
 ;; configure rcirc
 (defun get-string-from-file (file-path)
   (with-temp-buffer
