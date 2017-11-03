@@ -151,10 +151,21 @@
 (setq draft-store-directory "~/Dropbox/drafts")
 (global-set-key (kbd "C-c C-x d") 'start-draft)
 
+;; utilities
+(defun kill-current-after (&optional fn)
+  (lexical-let ((fn fn))
+    (lambda ()
+      (interactive)
+      (let ((cb (current-buffer)))
+	(when fn
+	  (funcall fn))
+	(kill-buffer cb)))))
+
 ;; dired mode
 (setq dired-isearch-filenames t)
 (setq delete-by-moving-to-trash t)
 (setq trash-directory "~/.Trash")
+
 (defun dired-view-file-other-window ()
   (interactive)
   (let ((file (dired-get-file-for-visit)))
@@ -163,13 +174,17 @@
 		 (dired-goto-subdir file))
 	    (dired file))
       (view-file-other-window file))))
-(add-hook 'dired-mode-hook
-	  (lambda ()
-	    (define-key dired-mode-map "o" 'dired-display-file)
-	    (define-key dired-mode-map "v" 'dired-view-file-other-window)
-	    (define-key dired-mode-map "k" 'dired-previous-line)
-	    (define-key dired-mode-map "j" 'dired-next-line)
-	    (define-key dired-mode-map [(control o)] 'other-window)))
+
+(defun dired-upgrade-mode-map ()
+  (define-key dired-mode-map [(control o)] 'other-window)
+  (define-key dired-mode-map "k" 'dired-previous-line)
+  (define-key dired-mode-map "j" 'dired-next-line)
+  (define-key dired-mode-map "v" 'dired-view-file-other-window)
+  (define-key dired-mode-map "o" 'dired-find-file-other-window)
+  (define-key dired-mode-map "q" (kill-current-after))
+  (define-key dired-mode-map (kbd "RET") (kill-current-after #'dired-find-file)))
+
+(add-hook 'dired-mode-hook 'dired-upgrade-mode-map)
 (global-set-key (kbd "C-x C-d") 'dired-other-window)
 
 ;; buffer menu mode
@@ -177,12 +192,17 @@
                       ; buff-menu (in our load path)
 (require 'buff-menu+)
 (setq Buffer-menu-sort-column 5)
-(global-set-key (kbd "C-x C-b") 'buffer-menu-other-window)
+
 (define-key Buffer-menu-mode-map [(control o)] 'other-window)
-(define-key Buffer-menu-mode-map "v" 'Buffer-menu-view-other-window)
-(define-key Buffer-menu-mode-map "o" 'Buffer-menu-switch-other-window)
 (define-key Buffer-menu-mode-map "k" 'previous-line)
 (define-key Buffer-menu-mode-map "j" 'next-line)
+(define-key Buffer-menu-mode-map "v" 'Buffer-menu-view-other-window)
+(define-key Buffer-menu-mode-map "o" 'Buffer-menu-other-window)
+(define-key Buffer-menu-mode-map "q" (kill-current-after))
+(define-key Buffer-menu-mode-map
+  (kbd "RET") (kill-current-after 'Buffer-menu-this-window))
+
+(global-set-key (kbd "C-x C-b") 'buffer-menu-other-window)
 
 ;; while we're at it, make it easy to create new buffers
 (global-set-key (kbd "C-x C-n")
