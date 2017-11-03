@@ -7,9 +7,19 @@
 (add-to-list 'load-path "~/projects/emacs-conf/")
 
 (custom-set-variables
- '(package-selected-packages (quote (slime))))
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages (quote (slime)))
+ '(rcirc-server-alist (quote (("irc.freenode.net" :channels ("#haskell"))))))
 
-(custom-set-faces)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
 
 ;; Some niceties
 (load-theme 'wombat)               ; load theme
@@ -141,3 +151,34 @@
 (setq draft-store-directory "~/Dropbox/drafts")
 (global-set-key (kbd "C-c C-x d") 'start-draft)
 
+;; dired mode
+(setq dired-isearch-filenames t)
+(setq delete-by-moving-to-trash t)
+(setq trash-directory "~/.Trash")
+(defun dired-view-file-other-window ()
+  (interactive)
+  (let ((file (dired-get-file-for-visit)))
+    (if (file-directory-p file)
+	(or (and (cdr dired-subdir-alist)
+		 (dired-goto-subdir file))
+	    (dired file))
+      (view-file-other-window file))))
+(add-hook 'dired-mode-hook
+	  (lambda ()
+	    (define-key dired-mode-map "o" 'dired-display-file)
+	    (define-key dired-mode-map "v" 'dired-view-file-other-window)
+	    (define-key dired-mode-map "k" 'dired-previous-line)
+	    (define-key dired-mode-map "j" 'dired-next-line)
+	    (define-key dired-mode-map [(control o)] 'other-window)))
+
+;; configure rcirc
+(defun get-string-from-file (file-path)
+  (with-temp-buffer
+    (insert-file-contents file-path)
+    (buffer-string)))
+(setq rcirc-authinfo
+      `(("irc.freenode.net" nickserv "spakhm" ,(get-string-from-file "~/.rcirc-pwd"))))
+(setq rcirc-default-nick "spakhm")
+(add-hook 'rcirc-mode-hook
+	  (lambda ()
+	    (rcirc-track-minor-mode 1)))
