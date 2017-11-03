@@ -53,10 +53,12 @@
 
 (defun draft-file-insert (txt)
   (when (null draft-file-name)
-    (setq-local draft-file-name
-		(concat
-		 (file-name-as-directory draft-store-directory)
-		 (make-file-name txt)))
+    (let ((file-name (make-file-name txt)))
+      (rename-buffer file-name)
+      (setq-local draft-file-name
+		  (concat
+		   (file-name-as-directory draft-store-directory)
+		   file-name)))
     (message "Storing draft in %s" draft-file-name))
   (with-temp-message (or (current-message) "")
     (write-region (concat txt (list ?\n)) nil draft-file-name t)))
@@ -95,6 +97,12 @@
 
 (defun draft-lui-input ()
   (buffer-substring lui-input-marker (point-max)))
+
+(defun start-draft ()
+  (interactive)
+  (switch-to-buffer
+   (generate-new-buffer "*Draft*"))
+  (draft-mode))
 
 (define-derived-mode draft-mode lui-mode "Draft"
   ""

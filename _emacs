@@ -139,4 +139,5 @@
 ;; draft mode
 (require 'draft-mode)
 (setq draft-store-directory "~/Dropbox/drafts")
+(global-set-key (kbd "C-c C-x d") 'start-draft)
 
