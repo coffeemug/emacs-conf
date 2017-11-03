@@ -170,6 +170,7 @@
 	    (define-key dired-mode-map "k" 'dired-previous-line)
 	    (define-key dired-mode-map "j" 'dired-next-line)
 	    (define-key dired-mode-map [(control o)] 'other-window)))
+(global-set-key (kbd "C-x C-d") 'dired-other-window)
 
 ;; buffer menu mode
 (load "buff-menu.el") ; buff-menu+ relies on an old version of
