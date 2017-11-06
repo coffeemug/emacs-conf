@@ -139,6 +139,7 @@
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 
 ;; moving buffers
+(require 'buffer-move)
 (global-set-key [(meta left)] 'buf-move-left)
 (global-set-key [(meta right)] 'buf-move-right)
 
