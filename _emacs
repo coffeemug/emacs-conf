@@ -48,6 +48,7 @@
 (setq confirm-nonexistent-file-or-buffer nil)
 (setq ido-create-new-buffer 'always)
 (setq ido-use-virtual-buffers t)
+(setq ido-enable-flex-matching t)
 
 ;; Enable IDO in as many places as possible
 (require 'ido-completing-read+)
@@ -139,6 +140,7 @@
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 
 ;; moving buffers
+(require 'buffer-move)
 (global-set-key [(meta left)] 'buf-move-left)
 (global-set-key [(meta right)] 'buf-move-right)
 
