@@ -139,8 +139,9 @@
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 
-;; rjsx
+;; rjsx/javascript
 (setq js-indent-level 2)
+(setq js2-strict-trailing-comma-warning nil)
 (add-to-list 'auto-mode-alist '(".*\\.js\\'" . rjsx-mode))
 
 ;; moving buffers
