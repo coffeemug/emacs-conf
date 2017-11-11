@@ -139,6 +139,10 @@
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 
+;; rjsx
+(setq js-indent-level 2)
+(add-to-list 'auto-mode-alist '(".*\\.js\\'" . rjsx-mode))
+
 ;; moving buffers
 (require 'buffer-move)
 (global-set-key [(meta left)] 'buf-move-left)
