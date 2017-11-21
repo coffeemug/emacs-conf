@@ -11,7 +11,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (cider rjsx-mode swift-mode slime)))
+ '(package-selected-packages (quote (jedi cider rjsx-mode swift-mode slime)))
  '(rcirc-server-alist (quote (("irc.freenode.net" :channels ("#haskell"))))))
 
 (custom-set-faces
@@ -143,6 +143,13 @@
 (setq js-indent-level 2)
 (setq js2-strict-trailing-comma-warning nil)
 (add-to-list 'auto-mode-alist '(".*\\.js\\'" . rjsx-mode))
+
+;; python
+(require 'jedi)
+(setenv "IPY_TEST_SIMPLE_PROMPT" "1")
+(setq python-shell-interpreter "/usr/local/bin/ipython")
+(setq jedi:server-command (list python-shell-interpreter jedi:server-script))
+(setq python-indent-offset 4)
 
 ;; moving buffers
 (require 'buffer-move)
