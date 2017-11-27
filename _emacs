@@ -154,14 +154,17 @@
 (global-set-key (kbd "C-c C-x d") 'start-draft)
 
 ;; utilities
-(defun kill-current-after (&optional fn)
-  (lexical-let ((fn fn))
+(defun kill-current-after (&optional fn delete-window-p)
+  (lexical-let ((fn fn)
+		(delete-window-p delete-window-p))
     (lambda ()
       (interactive)
       (let ((cb (current-buffer)))
 	(when fn
 	  (funcall fn))
-	(kill-buffer cb)))))
+	(kill-buffer cb)
+	(when delete-window-p
+	  (delete-window))))))
 
 ;; dired mode
 (setq dired-isearch-filenames t)
@@ -183,7 +186,7 @@
   (define-key dired-mode-map "j" 'dired-next-line)
   (define-key dired-mode-map "v" 'dired-view-file-other-window)
   (define-key dired-mode-map "o" 'dired-find-file-other-window)
-  (define-key dired-mode-map "q" (kill-current-after))
+  (define-key dired-mode-map "q" (kill-current-after nil t))
   (define-key dired-mode-map (kbd "RET") (kill-current-after #'dired-find-file)))
 
 (add-hook 'dired-mode-hook 'dired-upgrade-mode-map)
@@ -200,7 +203,7 @@
 (define-key Buffer-menu-mode-map "j" 'next-line)
 (define-key Buffer-menu-mode-map "v" 'Buffer-menu-view-other-window)
 (define-key Buffer-menu-mode-map "o" 'Buffer-menu-other-window)
-(define-key Buffer-menu-mode-map "q" (kill-current-after))
+(define-key Buffer-menu-mode-map "q" (kill-current-after nil t))
 (define-key Buffer-menu-mode-map
   (kbd "RET") (kill-current-after 'Buffer-menu-this-window))
 
