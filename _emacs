@@ -106,14 +106,14 @@
 (when (display-graphic-p)
   (tool-bar-mode 0)
   (scroll-bar-mode -1)
-  ; prettify vertical border color
+					; prettify vertical border color
   (set-face-background 'vertical-border "gray")
   (set-face-foreground 'vertical-border
 		       (face-background 'vertical-border)))
 
 ;; markdown mode (err, I do write a lot of markdown)
 (autoload 'markdown-mode "markdown-mode"
-   "Major mode for editing Markdown files" t)
+  "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
 ;; Setup burndown mode for markdown
@@ -156,7 +156,8 @@
 
 ;; playing with slime
 (setq inferior-lisp-program "/usr/local/bin/sbcl")
-(add-to-list 'slime-contribs 'slime-repl)
+(when (boundp 'slime-contribs)
+  (add-to-list 'slime-contribs 'slime-repl))
 
 ;; draft mode
 (require 'draft-mode)
@@ -228,9 +229,11 @@
 
 ;; configure rcirc
 (defun get-string-from-file (file-path)
-  (with-temp-buffer
-    (insert-file-contents file-path)
-    (buffer-string)))
+  (if (file-exists-p "~/.rcirc-pwd")
+      (with-temp-buffer
+	(insert-file-contents file-path)
+	(buffer-string))
+    ""))
 (setq rcirc-authinfo
       `(("irc.freenode.net" nickserv "spakhm" ,(get-string-from-file "~/.rcirc-pwd"))))
 (setq rcirc-default-nick "spakhm")
