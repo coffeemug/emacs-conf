@@ -5,6 +5,7 @@
 
 ;; My own custom stuff
 (add-to-list 'load-path "~/projects/emacs-conf/")
+(add-to-list 'load-path "~/emacs-conf/")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
