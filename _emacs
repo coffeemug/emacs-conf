@@ -99,7 +99,7 @@
     (goto-char isearch-other-end)))
 
 ;; osx-specific instructions
-(when (string-match "darwin" system-configuration)
+(when (eq system-type 'darwin)
   ;; make apple-command be the meta modifier
   (setq mac-command-modifier 'meta))
 
