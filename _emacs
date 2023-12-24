@@ -13,9 +13,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(crm-custom markdown-mode smex ido-grid-mode ido-completing-read+)))
-
-(package-install-selected-packages)
+   '(company crm-custom markdown-mode smex ido-grid-mode ido-completing-read+)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -44,6 +42,12 @@
 (set-foreground-color "green")
 (set-face-foreground 'region "white")
 (set-face-background 'region "SkyBlue4")
+
+;; now that basic niceties are done, install missing packages if any
+(package-install-selected-packages)
+
+;; nice completion in every buffer
+(add-hook 'after-init-hook 'global-company-mode)
 
 ;; Configure IDO
 (ido-mode 1)
