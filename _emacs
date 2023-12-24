@@ -12,15 +12,17 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (cider rjsx-mode swift-mode slime)))
- '(rcirc-server-alist (quote (("irc.freenode.net" :channels ("#haskell"))))))
+ '(package-selected-packages
+   '(crm-custom markdown-mode smex ido-grid-mode ido-completing-read+)))
+
+(package-install-selected-packages)
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(hl-line ((t (:background "dark slate gray")))))
 
 ;; Some niceties
 (load-theme 'wombat)               ; load theme
@@ -84,9 +86,7 @@
 (global-set-key (kbd "M-=") 'count-words)
 
 ;; highlight the current line
-(setq highlight-current-line-globally t)
-(require 'highlight-current-line)
-(highlight-current-line-set-bg-color "dark slate gray")
+(global-hl-line-mode 1)
 
 ;; customize isearch to always end at the beginning of search word
 (add-hook 'isearch-mode-end-hook 'my-goto-match-beginning)
@@ -117,10 +117,6 @@
   "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
-;; Setup burndown mode for markdown
-(require 'burndown-mode)
-(add-hook 'markdown-mode-hook 'burndown-mode)
-
 ;; unfill paragraph
 (defun unfill-paragraph (&optional region)
   "Takes a multi-line paragraph and makes it into a single line of text."
@@ -130,11 +126,6 @@
         (emacs-lisp-docstring-fill-column t))
     (fill-paragraph nil region)))
 (global-set-key [(control q)] 'unfill-paragraph)
-
-;; Also, timers...
-(require 'countdown)
-(global-set-key (kbd "C-c C-x 0") 'countdown-start)
-(global-set-key (kbd "C-c C-x _") 'countdown-stop)
 
 ;; yaml-mode
 (require 'yaml-mode)
@@ -150,20 +141,10 @@
 (setq python-shell-interpreter "/usr/local/bin/ipython")
 (setq python-indent-offset 4)
 
-;; moving buffers
-(require 'buffer-move)
-(global-set-key [(meta left)] 'buf-move-left)
-(global-set-key [(meta right)] 'buf-move-right)
-
 ;; playing with slime
 (setq inferior-lisp-program "/usr/local/bin/sbcl")
 (when (boundp 'slime-contribs)
   (add-to-list 'slime-contribs 'slime-repl))
-
-;; draft mode
-(require 'draft-mode)
-(setq draft-store-directory "~/Dropbox/drafts")
-(global-set-key (kbd "C-c C-x d") 'start-draft)
 
 ;; utilities
 (defun kill-current-after (&optional fn delete-window-p)
@@ -204,23 +185,6 @@
 (add-hook 'dired-mode-hook 'dired-upgrade-mode-map)
 (global-set-key (kbd "C-x C-d") 'dired-other-window)
 
-;; buffer menu mode
-(load "buff-menu.el") ; buff-menu+ relies on an old version of
-                      ; buff-menu (in our load path)
-(require 'buff-menu+)
-(setq Buffer-menu-sort-column 5)
-
-(define-key Buffer-menu-mode-map [(control o)] 'other-window)
-(define-key Buffer-menu-mode-map "k" 'previous-line)
-(define-key Buffer-menu-mode-map "j" 'next-line)
-(define-key Buffer-menu-mode-map "v" 'Buffer-menu-view-other-window)
-(define-key Buffer-menu-mode-map "o" 'Buffer-menu-other-window)
-(define-key Buffer-menu-mode-map "q" (kill-current-after nil t))
-(define-key Buffer-menu-mode-map
-  (kbd "RET") (kill-current-after 'Buffer-menu-this-window))
-
-(global-set-key (kbd "C-x C-b") 'buffer-menu-other-window)
-
 ;; while we're at it, make it easy to create new buffers
 (global-set-key (kbd "C-x C-n")
 		(lambda ()
@@ -228,40 +192,3 @@
 		  (switch-to-buffer
 		   (generate-new-buffer "*scratch*"))))
 
-;; configure rcirc
-(defun get-string-from-file (file-path)
-  (if (file-exists-p "~/.rcirc-pwd")
-      (with-temp-buffer
-	(insert-file-contents file-path)
-	(buffer-string))
-    ""))
-(setq rcirc-authinfo
-      `(("irc.freenode.net" nickserv "spakhm" ,(get-string-from-file "~/.rcirc-pwd"))))
-(setq rcirc-default-nick "spakhm")
-(add-hook 'rcirc-mode-hook
-	  (lambda ()
-	    (rcirc-track-minor-mode 1)))
-(with-eval-after-load 'rcirc
-  (defun-rcirc-command reconnect (arg)
-    "Reconnect the server process."
-    (interactive "i")
-    (unless process
-      (error "There's no process for this target"))
-    (let* ((server (car (process-contact process)))
-	   (port (process-contact process :service))
-	   (nick (rcirc-nick process))
-	   channels query-buffers)
-      (dolist (buf (buffer-list))
-	(with-current-buffer buf
-	  (when (eq process (rcirc-buffer-process))
-	    (remove-hook 'change-major-mode-hook
-			 'rcirc-change-major-mode-hook)
-	    (if (rcirc-channel-p rcirc-target)
-		(setq channels (cons rcirc-target channels))
-	      (setq query-buffers (cons buf query-buffers))))))
-      (delete-process process)
-      (rcirc-connect server port nick
-		     rcirc-default-user-name
-		     rcirc-default-full-name
-		     channels)))
-  (define-key rcirc-mode-map [(control c) (control r)] 'rcirc-cmd-reconnect))
