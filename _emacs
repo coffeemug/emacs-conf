@@ -43,6 +43,10 @@
 (set-face-foreground 'region "white")
 (set-face-background 'region "SkyBlue4")
 
+;; intro msg
+(defun display-startup-echo-area-message ()
+  (message "Let the hacking begin!"))
+
 ;; now that basic niceties are done, install missing packages if any
 (package-install-selected-packages)
 
