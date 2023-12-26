@@ -138,35 +138,31 @@
 
   :bind (("C-q" . unfill-paragraph)))
 
-(use-package dired
-  :ensure nil
+(use-package dirvish
   :config
-  (setq dired-kill-when-opening-new-dired-buffer t)
-  (setq dired-isearch-filenames t)
+  (when (eq system-type 'darwin)
+    (setq insert-directory-program "/usr/local/bin/gls"
+          dired-listing-switches "-aBhl --group-directories-first"))
+  
+  (dirvish-override-dired-mode)
 
-  (defun dired-view-file-other-window ()
-    (interactive)
-    (let ((file (dired-get-file-for-visit)))
-      (if (file-directory-p file)
-	  (or (and (cdr dired-subdir-alist)
-		   (dired-goto-subdir file))
-	      (dired file))
-	(view-file-other-window file))))
-  (defun dired-quit-window ()
-    (interactive)
-    (quit-window t))
+  (setq dired-isearch-filenames t)
   
-  :bind ("C-x C-d" . dired-other-window)
-  
-  :bind (:map dired-mode-map
-	      ("k" . dired-previous-line)
-	      ("j" . dired-next-line)
-	      ("v" . dired-view-file-other-window)
-	      ("o" . dired-find-file-other-window)
-	      ("q" . dired-quit-window)))
+  :custom
+  (dirvish-reuse-session nil)
+
+  :bind ("C-x d" . dirvish-dwim)
+  :bind (:map dirvish-mode-map
+	      ("q" . dirvish-quit)
+	      ("C-g" . dirvish-quit)
+ 	      ("k" . dired-previous-line)
+ 	      ("j" . dired-next-line)
+	      ("<left>" . dired-up-directory)
+	      ("<right>" . dired-find-file)
+	      ("RET" . dired-find-file)
+	      ("/" . ido-find-file)))
 
 (use-package which-key
   :config
   (which-key-mode))
-
 
