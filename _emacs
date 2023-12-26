@@ -39,6 +39,24 @@
   (fset 'vanilla-grep #'grep)
   (fset 'grep #'consult-grep)
 
+  (defun gb/consult--source-recentf-items ()
+    (let ((ht (consult--buffer-file-hash))
+          file-name-handler-alist ;; No Tramp slowdown please.
+          items)
+      (dolist (file recentf-list (nreverse items))
+	;; Emacs 29 abbreviates file paths by default, see
+	;; `recentf-filename-handlers'.
+	(unless (eq (aref file 0) ?/)
+          (setq file (expand-file-name file)))
+	(unless (gethash file ht)
+          (push (propertize
+		 (file-name-nondirectory file)
+		 'multi-category `(file . ,file))
+		items)))))
+
+  (plist-put consult--source-recent-file
+             :items #'gb/consult--source-recentf-items)
+
   :bind (
 	 ("C-x b" . consult-buffer)
 	 ("M-g g" . consult-goto-line)
@@ -56,8 +74,9 @@
   (global-hl-line-mode 1))
 
 (use-package emacs
-  ;; Configure frame & window related stuff
   :ensure nil
+
+  ;; Configure frame & window related stuff
   :config
   (menu-bar-mode 0)
   (setq frame-title-format "%b")
@@ -68,40 +87,8 @@
     (pixel-scroll-precision-mode)
     (setq-default cursor-type 'bar))
 
-  :bind (("C-o" . other-window)))
+  :bind (("C-o" . other-window))
 
-(use-package emacs
-  ;; Specialize isearch
-  :ensure nil
-  :config
-  (defun my-goto-match-beginning ()
-    (when (and isearch-forward isearch-other-end)
-      (goto-char isearch-other-end)))
-  (defadvice isearch-exit (after my-goto-match-beginning activate)
-    "Go to beginning of match."
-    (when (and isearch-forward isearch-other-end)
-      (goto-char isearch-other-end)))
-  
-  :hook (isearch-mode-end . my-goto-match-beginning)
-  
-  :bind (("C-s" . isearch-forward-regexp)
-	 ("C-r" . isearch-backward-regexp)
-	 ("M-%" . query-replace-regexp)))
-
-(use-package emacs
-  ;; Add "unqill" command
-  :ensure nil
-  :config
-  (defun unfill-paragraph (&optional region)
-    "Takes a multi-line paragraph and makes it into a single line of text."
-    (interactive (progn (barf-if-buffer-read-only) '(t)))
-    (let ((fill-column (point-max))
-          ;; This would override `fill-column' if it's an integer.
-          (emacs-lisp-docstring-fill-column t))
-      (fill-paragraph nil region)))
-  :bind (("C-q" . unfill-paragraph)))
-
-(use-package emacs
   ;; General emacs configuration
   :config
   (add-to-list 'load-path "~/emacs-conf/")
@@ -117,10 +104,34 @@
 
   (defun display-startup-echo-area-message ()
     (message "Let the hacking begin!"))
-
+  
+  ;; Specialize isearch
   :config
-  (when (eq system-type 'darwin)
-    (setq mac-command-modifier 'meta)))
+  (defun my-goto-match-beginning ()
+    (when (and isearch-forward isearch-other-end)
+      (goto-char isearch-other-end)))
+  (defadvice isearch-exit (after my-goto-match-beginning activate)
+    "Go to beginning of match."
+    (when (and isearch-forward isearch-other-end)
+      (goto-char isearch-other-end)))
+  
+  :hook (isearch-mode-end . my-goto-match-beginning)
+  
+  :bind (("C-s" . isearch-forward-regexp)
+	 ("C-r" . isearch-backward-regexp)
+	 ("M-%" . query-replace-regexp))
+
+  ;; Add "unqill" command
+  :config
+  (defun unfill-paragraph (&optional region)
+    "Takes a multi-line paragraph and makes it into a single line of text."
+    (interactive (progn (barf-if-buffer-read-only) '(t)))
+    (let ((fill-column (point-max))
+          ;; This would override `fill-column' if it's an integer.
+          (emacs-lisp-docstring-fill-column t))
+      (fill-paragraph nil region)))
+
+  :bind (("C-q" . unfill-paragraph)))
 
 (use-package dired
   :ensure nil
