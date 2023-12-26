@@ -138,6 +138,16 @@
 
   :bind (("C-q" . unfill-paragraph)))
 
+(use-package all-the-icons
+  :if (display-graphic-p))
+
+(use-package all-the-icons-completion
+  :if (featurep 'all-the-icons)
+  
+  :config
+  (all-the-icons-completion-mode)
+  (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup))
+
 (use-package dirvish
   :config
   (when (eq system-type 'darwin)
@@ -146,9 +156,11 @@
   
   (dirvish-override-dired-mode)
 
-  (setq dired-isearch-filenames t)
-  
+  (when (featurep 'all-the-icons)
+    (setq dirvish-attributes '(all-the-icons file-size)))
+
   :custom
+  (dired-isearch-filenames t)
   (dirvish-reuse-session nil)
 
   :bind ("C-x d" . dirvish-dwim)
