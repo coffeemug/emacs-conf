@@ -148,3 +148,9 @@
 	      ("v" . dired-view-file-other-window)
 	      ("o" . dired-find-file-other-window)
 	      ("q" . dired-quit-window)))
+
+(use-package which-key
+  :config
+  (which-key-mode))
+
+
