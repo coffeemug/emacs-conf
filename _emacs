@@ -1,36 +1,14 @@
 (use-package package
-  :init
+  :config
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/")))
 
 (use-package use-package
   :init
   (setq use-package-always-ensure t))
 
-;; My own custom stuff
-(add-to-list 'load-path "~/emacs-conf/")
-
-;; Some niceties
 (use-package doom-themes
   :config
   (load-theme 'doom-one t))
-
-(menu-bar-mode 0)                  ; turn off unnecessary UI
-(show-paren-mode t)                ; enable paren-matching
-(transient-mark-mode t)            ; make regions sane
-(electric-pair-mode t)             ; type brackets in pairs
-(setq-default cursor-type 'bar)
-
-;; Some more niceties
-(setq frame-title-format "%b")                   ; set frame title to file name
-(setq inhibit-startup-message t)                 ; turn off splash screen
-(setq initial-scratch-message "")                ; turn off initial scratch buffer message
-(setq sentence-end-double-space nil)             ; make filling nicer
-(setq ring-bell-function 'ignore)                ; turn off the bell
-(defalias 'yes-or-no-p 'y-or-n-p)                ; make yes/no less annoying
-
-;; intro msg
-(defun display-startup-echo-area-message ()
-  (message "Let the hacking begin!"))
 
 ;; nice completion in every buffer
 (use-package company
@@ -38,23 +16,26 @@
 
 ;; Configure completion
 (use-package ido
-  :init
+  :config
   (ido-mode 1)
 
   (setq confirm-nonexistent-file-or-buffer nil)
   (setq ido-enable-flex-matching t))
 
 (use-package vertico
-  :init
+  :config
   (vertico-mode))
 
 (use-package marginalia
-  :init
+  :config
   (marginalia-mode))
 
 (use-package consult
+  :demand t
   :init
   (recentf-mode)
+
+  :config
   (fset 'vanilla-grep #'grep)
   (fset 'grep #'consult-grep)
 
@@ -70,90 +51,100 @@
   (completion-category-overrides '((file (styles basic partial-completion))))
   (orderless-matching-styles '(orderless-flex)))
 
-;; nicer keybindings
-(global-set-key [(control s)] 'isearch-forward-regexp)
-(global-set-key [(control r)] 'isearch-backward-regexp)
-(global-set-key [(meta %)] 'query-replace-regexp)
-(global-set-key [(control o)] 'other-window)
-(global-set-key (kbd "M-=") 'count-words)
+(use-package hl-line
+  :config
+  (global-hl-line-mode 1))
 
-;; highlight the current line
-(global-hl-line-mode 1)
+(use-package emacs
+  ;; Configure frame & window related stuff
+  :ensure nil
+  :config
+  (menu-bar-mode 0)
+  (setq frame-title-format "%b")
+  (setq ring-bell-function 'ignore)
+  (when (display-graphic-p)
+    (tool-bar-mode 0)
+    (scroll-bar-mode -1)
+    (pixel-scroll-precision-mode)
+    (setq-default cursor-type 'bar))
 
-;; customize isearch to always end at the beginning of search word
-(add-hook 'isearch-mode-end-hook 'my-goto-match-beginning)
-(defun my-goto-match-beginning ()
-  (when (and isearch-forward isearch-other-end)
-    (goto-char isearch-other-end)))
-(defadvice isearch-exit (after my-goto-match-beginning activate)
-  "Go to beginning of match."
-  (when (and isearch-forward isearch-other-end)
-    (goto-char isearch-other-end)))
+  :bind (("C-o" . other-window)))
 
-;; osx-specific instructions
-(when (eq system-type 'darwin)
-  ;; make apple-command be the meta modifier
-  (setq mac-command-modifier 'meta))
+(use-package emacs
+  ;; Specialize isearch
+  :ensure nil
+  :config
+  (defun my-goto-match-beginning ()
+    (when (and isearch-forward isearch-other-end)
+      (goto-char isearch-other-end)))
+  (defadvice isearch-exit (after my-goto-match-beginning activate)
+    "Go to beginning of match."
+    (when (and isearch-forward isearch-other-end)
+      (goto-char isearch-other-end)))
+  
+  :hook (isearch-mode-end . my-goto-match-beginning)
+  
+  :bind (("C-s" . isearch-forward-regexp)
+	 ("C-r" . isearch-backward-regexp)
+	 ("M-%" . query-replace-regexp)))
 
-;; graphics mode specific instructions
-(when (display-graphic-p)
-  (tool-bar-mode 0)
-  (scroll-bar-mode -1))
+(use-package emacs
+  ;; Add "unqill" command
+  :ensure nil
+  :config
+  (defun unfill-paragraph (&optional region)
+    "Takes a multi-line paragraph and makes it into a single line of text."
+    (interactive (progn (barf-if-buffer-read-only) '(t)))
+    (let ((fill-column (point-max))
+          ;; This would override `fill-column' if it's an integer.
+          (emacs-lisp-docstring-fill-column t))
+      (fill-paragraph nil region)))
+  :bind (("C-q" . unfill-paragraph)))
 
-;; unfill paragraph
-(defun unfill-paragraph (&optional region)
-  "Takes a multi-line paragraph and makes it into a single line of text."
-  (interactive (progn (barf-if-buffer-read-only) '(t)))
-  (let ((fill-column (point-max))
-        ;; This would override `fill-column' if it's an integer.
-        (emacs-lisp-docstring-fill-column t))
-    (fill-paragraph nil region)))
-(global-set-key [(control q)] 'unfill-paragraph)
+(use-package emacs
+  ;; General emacs configuration
+  :config
+  (add-to-list 'load-path "~/emacs-conf/")
 
-;; playing with slime
-(setq inferior-lisp-program "/usr/local/bin/sbcl")
-(when (boundp 'slime-contribs)
-  (add-to-list 'slime-contribs 'slime-repl))
+  (show-paren-mode t)
+  (transient-mark-mode t)
+  (electric-pair-mode t)
 
-;; dired mode
-(setq dired-kill-when-opening-new-dired-buffer t)
-(setq dired-isearch-filenames t)
+  (setq inhibit-startup-message t)
+  (setq initial-scratch-message "")
+  (setq sentence-end-double-space nil)
+  (defalias 'yes-or-no-p 'y-or-n-p)
 
-(defun dired-view-file-other-window ()
-  (interactive)
-  (let ((file (dired-get-file-for-visit)))
-    (if (file-directory-p file)
-	(or (and (cdr dired-subdir-alist)
-		 (dired-goto-subdir file))
-	    (dired file))
-      (view-file-other-window file))))
+  (defun display-startup-echo-area-message ()
+    (message "Let the hacking begin!"))
 
-(defun dired-upgrade-mode-map ()
-  (define-key dired-mode-map [(control o)] 'other-window)
-  (define-key dired-mode-map "k" 'dired-previous-line)
-  (define-key dired-mode-map "j" 'dired-next-line)
-  (define-key dired-mode-map "v" 'dired-view-file-other-window)
-  (define-key dired-mode-map "o" 'dired-find-file-other-window)
-  (define-key dired-mode-map "q" (lambda ()
-				   (interactive)
-				   (quit-window t))))
+  :config
+  (when (eq system-type 'darwin)
+    (setq mac-command-modifier 'meta)))
 
-(add-hook 'dired-mode-hook 'dired-upgrade-mode-map)
-(global-set-key (kbd "C-x C-d") 'dired-other-window)
+(use-package dired
+  :ensure nil
+  :config
+  (setq dired-kill-when-opening-new-dired-buffer t)
+  (setq dired-isearch-filenames t)
 
-;; while we're at it, make it easy to create new buffers
-(global-set-key (kbd "C-x C-n")
-		(lambda ()
-		  (interactive)
-		  (switch-to-buffer
-		   (generate-new-buffer "*scratch*"))))
-
-;; pixel perfect scrolling!
-(pixel-scroll-precision-mode)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(doom-themes yaml-mode vertico-prescient smex sly-quicklisp sly-named-readtables orderless markdown-mode marginalia magit ido-grid-mode ido-completing-read+ ebdb crm-custom counsel consult company-prescient)))
+  (defun dired-view-file-other-window ()
+    (interactive)
+    (let ((file (dired-get-file-for-visit)))
+      (if (file-directory-p file)
+	  (or (and (cdr dired-subdir-alist)
+		   (dired-goto-subdir file))
+	      (dired file))
+	(view-file-other-window file))))
+  (defun dired-quit-window ()
+    (interactive)
+    (quit-window t))
+  
+  :bind ("C-x C-d" . dired-other-window)
+  
+  :bind (:map dired-mode-map
+	      ("k" . dired-previous-line)
+	      ("j" . dired-next-line)
+	      ("v" . dired-view-file-other-window)
+	      ("o" . dired-find-file-other-window)
+	      ("q" . dired-quit-window)))
