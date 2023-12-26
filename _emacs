@@ -1,32 +1,24 @@
-;; package management
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(package-initialize)
+(use-package package
+  :init
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/")))
+
+(use-package use-package
+  :init
+  (setq use-package-always-ensure t))
 
 ;; My own custom stuff
 (add-to-list 'load-path "~/emacs-conf/")
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(company crm-custom markdown-mode smex ido-grid-mode ido-completing-read+)))
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(hl-line ((t (:background "dark slate gray")))))
-
 ;; Some niceties
-(load-theme 'wombat)               ; load theme
+(use-package doom-themes
+  :config
+  (load-theme 'doom-one t))
+
 (menu-bar-mode 0)                  ; turn off unnecessary UI
 (show-paren-mode t)                ; enable paren-matching
 (transient-mark-mode t)            ; make regions sane
 (electric-pair-mode t)             ; type brackets in pairs
+(setq-default cursor-type 'bar)
 
 ;; Some more niceties
 (setq frame-title-format "%b")                   ; set frame title to file name
@@ -36,54 +28,47 @@
 (setq ring-bell-function 'ignore)                ; turn off the bell
 (defalias 'yes-or-no-p 'y-or-n-p)                ; make yes/no less annoying
 
-;; basic colors (for GUIs and evil terminals)
-(set-background-color "black")
-(set-foreground-color "green")
-(set-face-foreground 'region "white")
-(set-face-background 'region "SkyBlue4")
-
 ;; intro msg
 (defun display-startup-echo-area-message ()
   (message "Let the hacking begin!"))
 
-;; now that basic niceties are done, install missing packages if any
-(package-install-selected-packages)
-
 ;; nice completion in every buffer
-(add-hook 'after-init-hook 'global-company-mode)
+(use-package company
+  :hook (after-init . global-company-mode))
 
-;; Configure IDO
-(ido-mode 1)
-(ido-everywhere 1)
-(setq confirm-nonexistent-file-or-buffer nil)
-(setq ido-create-new-buffer 'always)
-(setq ido-use-virtual-buffers t)
-(setq ido-enable-flex-matching t)
+;; Configure completion
+(use-package ido
+  :init
+  (ido-mode 1)
 
-;; Enable IDO in as many places as possible
-(require 'ido-completing-read+)
-(ido-ubiquitous-mode 1)
-(require 'crm-custom)
-(crm-custom-mode 1)
+  (setq confirm-nonexistent-file-or-buffer nil)
+  (setq ido-enable-flex-matching t))
 
-;; Prettify it
-(require 'ido-grid-mode)
-(ido-grid-mode 1)
-(setq ido-grid-mode-prefix-scrolls t)
+(use-package vertico
+  :init
+  (vertico-mode))
 
-(set-face-foreground 'ido-first-match "white")
-(set-face-background 'ido-first-match "RoyalBlue3")
-(set-face-attribute 'ido-first-match nil :weight 'normal)
+(use-package marginalia
+  :init
+  (marginalia-mode))
 
-(set-face-foreground 'ido-grid-mode-match "#a0a8b0")
-(set-face-background 'ido-grid-mode-match "#384048")
-(set-face-attribute 'ido-grid-mode-match nil :underline nil)
+(use-package consult
+  :init
+  (recentf-mode)
+  (fset 'vanilla-grep #'grep)
+  (fset 'grep #'consult-grep)
 
-;; smex
-(require 'smex)
-(smex-initialize)
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+  :bind (
+	 ("C-x b" . consult-buffer)
+	 ("M-g g" . consult-goto-line)
+	 ("M-g M-g" . consult-goto-line)
+	 ))
+
+(use-package orderless
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion))))
+  (orderless-matching-styles '(orderless-flex)))
 
 ;; nicer keybindings
 (global-set-key [(control s)] 'isearch-forward-regexp)
@@ -113,16 +98,7 @@
 ;; graphics mode specific instructions
 (when (display-graphic-p)
   (tool-bar-mode 0)
-  (scroll-bar-mode -1)
-					; prettify vertical border color
-  (set-face-background 'vertical-border "gray")
-  (set-face-foreground 'vertical-border
-		       (face-background 'vertical-border)))
-
-;; markdown mode (err, I do write a lot of markdown)
-(autoload 'markdown-mode "markdown-mode"
-  "Major mode for editing Markdown files" t)
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+  (scroll-bar-mode -1))
 
 ;; unfill paragraph
 (defun unfill-paragraph (&optional region)
@@ -133,20 +109,6 @@
         (emacs-lisp-docstring-fill-column t))
     (fill-paragraph nil region)))
 (global-set-key [(control q)] 'unfill-paragraph)
-
-;; yaml-mode
-(require 'yaml-mode)
-(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
-
-;; rjsx/javascript
-(setq js-indent-level 2)
-(setq js2-strict-trailing-comma-warning nil)
-(add-to-list 'auto-mode-alist '(".*\\.js\\'" . rjsx-mode))
-
-;; python
-(setenv "IPY_TEST_SIMPLE_PROMPT" "1")
-(setq python-shell-interpreter "/usr/local/bin/ipython")
-(setq python-indent-offset 4)
 
 ;; playing with slime
 (setq inferior-lisp-program "/usr/local/bin/sbcl")
@@ -188,3 +150,10 @@
 
 ;; pixel perfect scrolling!
 (pixel-scroll-precision-mode)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(doom-themes yaml-mode vertico-prescient smex sly-quicklisp sly-named-readtables orderless markdown-mode marginalia magit ido-grid-mode ido-completing-read+ ebdb crm-custom counsel consult company-prescient)))
