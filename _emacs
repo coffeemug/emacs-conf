@@ -200,3 +200,5 @@
 		  (switch-to-buffer
 		   (generate-new-buffer "*scratch*"))))
 
+;; pixel perfect scrolling!
+(pixel-scroll-precision-mode)
