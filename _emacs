@@ -154,23 +154,9 @@
 (when (boundp 'slime-contribs)
   (add-to-list 'slime-contribs 'slime-repl))
 
-;; utilities
-(defun kill-current-after (&optional fn delete-window-p)
-  (lexical-let ((fn fn)
-		(delete-window-p delete-window-p))
-    (lambda ()
-      (interactive)
-      (let ((cb (current-buffer)))
-	(when fn
-	  (funcall fn))
-	(kill-buffer cb)
-	(when delete-window-p
-	  (delete-window))))))
-
 ;; dired mode
+(setq dired-kill-when-opening-new-dired-buffer t)
 (setq dired-isearch-filenames t)
-(setq delete-by-moving-to-trash t)
-(setq trash-directory "~/.Trash")
 
 (defun dired-view-file-other-window ()
   (interactive)
@@ -187,8 +173,9 @@
   (define-key dired-mode-map "j" 'dired-next-line)
   (define-key dired-mode-map "v" 'dired-view-file-other-window)
   (define-key dired-mode-map "o" 'dired-find-file-other-window)
-  (define-key dired-mode-map "q" (kill-current-after nil t))
-  (define-key dired-mode-map (kbd "RET") (kill-current-after #'dired-find-file)))
+  (define-key dired-mode-map "q" (lambda ()
+				   (interactive)
+				   (quit-window t))))
 
 (add-hook 'dired-mode-hook 'dired-upgrade-mode-map)
 (global-set-key (kbd "C-x C-d") 'dired-other-window)
