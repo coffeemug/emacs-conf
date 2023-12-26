@@ -157,10 +157,11 @@
 	      ("C-g" . dirvish-quit)
  	      ("k" . dired-previous-line)
  	      ("j" . dired-next-line)
+	      ("<backspace>" . dired-up-directory)
 	      ("<left>" . dired-up-directory)
 	      ("<right>" . dired-find-file)
 	      ("RET" . dired-find-file)
-	      ("/" . ido-find-file)))
+	      ("/" . isearch-forward-regexp)))
 
 (use-package which-key
   :config
