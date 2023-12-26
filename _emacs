@@ -104,6 +104,11 @@
 
   (defun display-startup-echo-area-message ()
     (message "Let the hacking begin!"))
+
+  ;; Platform specific
+  :config
+  (when (eq system-type 'darwin)
+    (setq mac-command-modifier 'meta))
   
   ;; Specialize isearch
   :config
