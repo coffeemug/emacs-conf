@@ -67,7 +67,7 @@
   :custom
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion))))
-  (orderless-matching-styles '(orderless-flex)))
+  (orderless-matching-styles '(orderless-literal orderless-flex)))
 
 (use-package hl-line
   :config
