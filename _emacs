@@ -274,3 +274,6 @@
 
 (use-package magit)
 
+(use-package display-line-numbers
+  :ensure nil
+  :bind ("C-x C-l" . global-display-line-numbers-mode))
