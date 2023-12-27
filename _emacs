@@ -129,12 +129,6 @@
 	 ("M-g M-g" . consult-goto-line)
 	 ))
 
-(use-package orderless
-  :custom
-  (completion-styles '(orderless basic))
-  (completion-category-overrides '((file (styles basic partial-completion))))
-  (orderless-matching-styles '(orderless-literal orderless-flex)))
-
 (use-package hl-line
   :config
   (global-hl-line-mode 1))
@@ -142,43 +136,40 @@
 (use-package emacs
   :ensure nil
 
-  ;; Configure frame & window related stuff
+  :custom
+  (frame-title-format "%b")
+  (ring-bell-function 'ignore)
+  (inhibit-startup-message t)
+  (initial-scratch-message "")
+  (sentence-end-double-space nil)
+  (completion-styles '(flex))
+
   :config
+  (add-to-list 'load-path "~/emacs-conf/")
+
   (menu-bar-mode 0)
-  (setq frame-title-format "%b")
-  (setq ring-bell-function 'ignore)
+  (show-paren-mode t)
+  (transient-mark-mode t)
+  (electric-pair-mode t)
+  (defalias 'yes-or-no-p 'y-or-n-p)
+  (defun display-startup-echo-area-message ()
+    (message "Let the hacking begin!"))
+
   (when (display-graphic-p)
     (tool-bar-mode 0)
     (scroll-bar-mode -1)
     (pixel-scroll-precision-mode)
     (setq-default cursor-type 'bar))
 
-  :bind (("C-o" . other-window))
-
-  ;; General emacs configuration
-  :config
-  (add-to-list 'load-path "~/emacs-conf/")
-
-  (show-paren-mode t)
-  (transient-mark-mode t)
-  (electric-pair-mode t)
-
-  (setq inhibit-startup-message t)
-  (setq initial-scratch-message "")
-  (setq sentence-end-double-space nil)
-  (defalias 'yes-or-no-p 'y-or-n-p)
-
-  (defun display-startup-echo-area-message ()
-    (message "Let the hacking begin!"))
-
   ;; Platform specific
-  :config
   (when (eq system-type 'darwin)
     (setq mac-command-modifier 'meta))
   
   (when (eq system-type 'windows-nt)
     (set-face-attribute 'default nil :font "Consolas-10"))
   
+  :bind (("C-o" . other-window))
+
   ;; Specialize isearch
   :config
   (defun my-goto-match-beginning ()
