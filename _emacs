@@ -247,6 +247,13 @@
 	      ("RET" . dired-find-file)
 	      ("/" . isearch-forward-regexp))
 
+  ;; toggle "boring" files
+  :custom
+  (dired-omit-files "\\`[.].*")
+  :hook (dired-mode . dired-omit-mode)
+  :bind (:map dirvish-mode-map
+	      ("b" . dired-omit-mode))
+
   ;; jump to directory from within dired
   :config
   (defun jump-to-directory ()
