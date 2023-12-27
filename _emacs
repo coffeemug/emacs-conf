@@ -222,17 +222,15 @@
   :config
   (when (eq system-type 'darwin)
     (setq insert-directory-program "/usr/local/bin/gls"
-          dired-listing-switches "-aBhl --group-directories-first"))
+          dired-listing-switches "-ABhl --group-directories-first"))
   
   (dirvish-override-dired-mode)
-
-  (when (featurep 'nerd-icons)
-    (setq dirvish-attributes '(nerd-icons file-size))
-    (setq dirvish-subtree-state-style 'nerd))
 
   :custom
   (dired-isearch-filenames t)
   (dirvish-reuse-session nil)
+  (dirvish-subtree-state-style 'nerd)
+  (dirvish-attributes '(nerd-icons subtree-state file-size file-time))
 
   :bind (("C-x d" . dirvish-dwim)
 	 ("C-x C-d" . dirvish-dwim))
@@ -242,17 +240,46 @@
  	      ("k" . dired-previous-line)
  	      ("j" . dired-next-line)
 	      ("<backspace>" . dired-up-directory)
-	      ("<left>" . dired-up-directory)
-	      ("<right>" . dired-find-file)
 	      ("RET" . dired-find-file)
 	      ("/" . isearch-forward-regexp))
 
   ;; toggle "boring" files
+  :config
+  (defun dired-omit-toggle-quiet ()
+    (interactive)
+    (dired-omit-mode (if dired-omit-mode -1 1)))
   :custom
   (dired-omit-files "\\`[.].*")
+  (dired-omit-verbose . nil)
   :hook (dired-mode . dired-omit-mode)
   :bind (:map dirvish-mode-map
-	      ("b" . dired-omit-mode))
+	      ("b" . dired-omit-toggle-quiet))
+
+  ;; subtrees
+  :custom
+  (dirvish-subtree-always-show-state t)
+  
+  :config
+  (defun dirvish-subtree-collapse ()
+    (interactive)
+    (when (dirvish-subtree--expanded-p)
+      (dired-next-line 1)
+      (dirvish-subtree-remove)))
+  
+  (defun dirvish-subtree-expand ()
+    (interactive)
+    (when (not (dirvish-subtree--expanded-p))
+      (condition-case err (dirvish-subtree--insert)
+	(file-error (dirvish-subtree--view-file))
+	(error (message "%s" (cdr err))))
+      ;; Expanding and collapsing subtrees doesn't respect the omit
+      ;; mode. So we need to reomit the file.
+      (when dired-omit-mode
+	(dired-omit-mode 1))))
+  
+  :bind (:map dirvish-mode-map
+	      ("<left>" . dirvish-subtree-collapse)
+	      ("<right>" . dirvish-subtree-expand))
 
   ;; jump to directory from within dired
   :config
@@ -277,3 +304,4 @@
 (use-package display-line-numbers
   :ensure nil
   :bind ("C-x C-l" . global-display-line-numbers-mode))
+
