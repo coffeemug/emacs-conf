@@ -110,6 +110,9 @@
   (when (eq system-type 'darwin)
     (setq mac-command-modifier 'meta))
   
+  (when (eq system-type 'windows-nt)
+    (set-face-attribute 'default nil :font "Consolas-10"))
+  
   ;; Specialize isearch
   :config
   (defun my-goto-match-beginning ()
@@ -183,4 +186,6 @@
 
 (use-package doom-modeline
   :config (doom-modeline-mode 1))
+
+(use-package magit)
 
