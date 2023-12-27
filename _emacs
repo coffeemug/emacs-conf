@@ -29,6 +29,7 @@
   (show-paren-mode t)
   (transient-mark-mode t)
   (electric-pair-mode t)
+  (global-prettify-symbols-mode 1)
 
   (setq inhibit-startup-message t)
   (setq initial-scratch-message "")
@@ -82,7 +83,7 @@
 ;; Configure completion
 (use-package ido
   :config
-  (ido-mode 1)
+  (ido-mode 'file)
 
   (setq confirm-nonexistent-file-or-buffer nil)
   (setq ido-enable-flex-matching t))
