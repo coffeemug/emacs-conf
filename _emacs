@@ -6,6 +6,72 @@
   :init
   (setq use-package-always-ensure t))
 
+(use-package emacs
+  :ensure nil
+
+  ;; Configure frame & window related stuff
+  :config
+  (menu-bar-mode 0)
+  (setq frame-title-format "%b")
+  (setq ring-bell-function 'ignore)
+  (when (display-graphic-p)
+    (tool-bar-mode 0)
+    (scroll-bar-mode -1)
+    (pixel-scroll-precision-mode)
+    (setq-default cursor-type 'bar))
+
+  :bind (("C-o" . other-window))
+
+  ;; General emacs configuration
+  :config
+  (add-to-list 'load-path "~/emacs-conf/")
+
+  (show-paren-mode t)
+  (transient-mark-mode t)
+  (electric-pair-mode t)
+  (global-prettify-symbols-mode 1)
+
+  (setq inhibit-startup-message t)
+  (setq initial-scratch-message "")
+  (setq sentence-end-double-space nil)
+  (defalias 'yes-or-no-p 'y-or-n-p)
+
+  (defun display-startup-echo-area-message ()
+    (message "Let the hacking begin!"))
+
+  ;; Platform specific
+  :config
+  (when (eq system-type 'darwin)
+    (setq mac-command-modifier 'meta))
+  
+  ;; Specialize isearch
+  :config
+  (defun my-goto-match-beginning ()
+    (when (and isearch-forward isearch-other-end)
+      (goto-char isearch-other-end)))
+  (defadvice isearch-exit (after my-goto-match-beginning activate)
+    "Go to beginning of match."
+    (when (and isearch-forward isearch-other-end)
+      (goto-char isearch-other-end)))
+  
+  :hook (isearch-mode-end . my-goto-match-beginning)
+  
+  :bind (("C-s" . isearch-forward-regexp)
+	 ("C-r" . isearch-backward-regexp)
+	 ("M-%" . query-replace-regexp))
+
+  ;; Add "unqill" command
+  :config
+  (defun unfill-paragraph (&optional region)
+    "Takes a multi-line paragraph and makes it into a single line of text."
+    (interactive (progn (barf-if-buffer-read-only) '(t)))
+    (let ((fill-column (point-max))
+          ;; This would override `fill-column' if it's an integer.
+          (emacs-lisp-docstring-fill-column t))
+      (fill-paragraph nil region)))
+
+  :bind (("C-q" . unfill-paragraph)))
+
 (use-package doom-themes
   :config
   (load-theme 'doom-one t))
@@ -17,7 +83,7 @@
 ;; Configure completion
 (use-package ido
   :config
-  (ido-mode 1)
+  (ido-mode 'file)
 
   (setq confirm-nonexistent-file-or-buffer nil)
   (setq ido-enable-flex-matching t))
