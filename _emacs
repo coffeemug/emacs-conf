@@ -234,7 +234,8 @@
   (dired-isearch-filenames t)
   (dirvish-reuse-session nil)
 
-  :bind ("C-x d" . dirvish-dwim)
+  :bind (("C-x d" . dirvish-dwim)
+	 ("C-x C-d" . dirvish-dwim))
   :bind (:map dirvish-mode-map
 	      ("q" . dirvish-quit)
 	      ("C-g" . dirvish-quit)
@@ -244,7 +245,18 @@
 	      ("<left>" . dired-up-directory)
 	      ("<right>" . dired-find-file)
 	      ("RET" . dired-find-file)
-	      ("/" . isearch-forward-regexp)))
+	      ("/" . isearch-forward-regexp))
+
+  ;; jump to directory from within dired
+  :config
+  (defun jump-to-directory ()
+    (interactive)
+    (dired-jump nil (ido-read-directory-name "Find dir: ")))
+  :bind (:map dirvish-mode-map
+	      ("C-x C-f" . jump-to-directory)
+	      ("C-x d" . jump-to-directory)
+	      ("C-x C-d" . jump-to-directory))
+  )
 
 (use-package which-key
   :config
