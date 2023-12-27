@@ -138,15 +138,16 @@
 
   :bind (("C-q" . unfill-paragraph)))
 
-(use-package all-the-icons
-  :if (display-graphic-p))
+(use-package nerd-icons)
 
-(use-package all-the-icons-completion
-  :if (featurep 'all-the-icons)
-  
+(use-package nerd-icons-completion
+  :if (featurep 'nerd-icons)
   :config
-  (all-the-icons-completion-mode)
-  (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup))
+  (nerd-icons-completion-mode)
+
+  :after marginalia
+  :config
+  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 
 (use-package dirvish
   :config
@@ -156,8 +157,9 @@
   
   (dirvish-override-dired-mode)
 
-  (when (featurep 'all-the-icons)
-    (setq dirvish-attributes '(all-the-icons file-size)))
+  (when (featurep 'nerd-icons)
+    (setq dirvish-attributes '(nerd-icons file-size))
+    (setq dirvish-subtree-state-style 'nerd))
 
   :custom
   (dired-isearch-filenames t)
@@ -178,4 +180,7 @@
 (use-package which-key
   :config
   (which-key-mode))
+
+(use-package doom-modeline
+  :config (doom-modeline-mode 1))
 
