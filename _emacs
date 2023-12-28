@@ -247,3 +247,33 @@
 (use-package embark-consult
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
+
+(use-package proced
+  :ensure nil
+  :config
+  (add-to-list
+   'proced-format-alist
+   '(custom pid user rss pmem pcpu time state comm))
+  
+  :custom
+  (proced-format 'custom)
+  (proced-auto-update-flag t)
+  (proced-auto-update-interval 1)
+  (proced-enable-color-flag t))
+
+(use-package treesit
+  :if (treesit-available-p)
+  :demand t
+  :ensure nil
+  :custom
+  (treesit-language-source-alist
+   '((cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+     (c "https://github.com/tree-sitter/tree-sitter-c")))
+  (treesit-load-name-override-list
+   '((c++ "libtree-sitter-cpp")))
+  (major-mode-remap-alist
+   '((c-mode . c-ts-mode)
+     (c++-mode . c++-ts-mode)
+     (c-or-c++-mode . c-or-c++-ts-mode)))
+  )
+
