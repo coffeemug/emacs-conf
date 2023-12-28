@@ -248,19 +248,6 @@
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
-(use-package proced
-  :ensure nil
-  :config
-  (add-to-list
-   'proced-format-alist
-   '(custom pid user rss pmem pcpu time state comm))
-  
-  :custom
-  (proced-format 'custom)
-  (proced-auto-update-flag t)
-  (proced-auto-update-interval 1)
-  (proced-enable-color-flag t))
-
 (use-package treesit
   :if (treesit-available-p)
   :demand t
