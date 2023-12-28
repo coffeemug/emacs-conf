@@ -279,6 +279,10 @@
 
 (use-package eglot
   :ensure nil
+
+  :custom
+  (eldoc-echo-area-use-multiline-p nil)
+  
   :hook ((c-ts-mode . eglot-ensure)
 	 (c++-ts-mode . eglot-ensure)
 	 (c-or-c++-ts-mode . eglot-ensure)))
