@@ -153,7 +153,7 @@
   :config
   (when (eq system-type 'darwin)
     (setq insert-directory-program "/usr/local/bin/gls"
-          dired-listing-switches "-ABhl --group-directories-first"))
+          dired-listing-switches "-ABl --group-directories-first"))
   
   (dirvish-override-dired-mode)
 
@@ -172,7 +172,9 @@
  	      ("j" . dired-next-line)
 	      ("<backspace>" . dired-up-directory)
 	      ("RET" . dired-find-file)
-	      ("/" . isearch-forward-regexp))
+	      ("/" . isearch-forward-regexp)
+	      ("C-o" . other-window)
+	      ("s" . dirvish-quicksort))
 
   ;; toggle "boring" files
   :config
