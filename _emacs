@@ -238,3 +238,12 @@
   :ensure nil
   :bind ("C-x C-l" . global-display-line-numbers-mode))
 
+(use-package embark
+  :bind
+  (("C-." . embark-act)
+   ("M-." . embark-dwim))
+  )
+
+(use-package embark-consult
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
