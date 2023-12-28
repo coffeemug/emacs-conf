@@ -153,7 +153,7 @@
   :config
   (when (eq system-type 'darwin)
     (setq insert-directory-program "/usr/local/bin/gls"
-          dired-listing-switches "-ABl --group-directories-first"))
+          dired-listing-switches "-l --almost-all --ignore-backups --group-directories-first"))
   
   (dirvish-override-dired-mode)
 
