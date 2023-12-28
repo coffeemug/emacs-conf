@@ -277,3 +277,8 @@
      (c-or-c++-mode . c-or-c++-ts-mode)))
   )
 
+(use-package eglot
+  :ensure nil
+  :hook ((c-ts-mode . eglot-ensure)
+	 (c++-ts-mode . eglot-ensure)
+	 (c-or-c++-ts-mode . eglot-ensure)))
