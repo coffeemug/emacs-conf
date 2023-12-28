@@ -152,8 +152,7 @@
 (use-package dirvish
   :config
   (when (eq system-type 'darwin)
-    (setq insert-directory-program "/usr/local/bin/gls"
-          dired-listing-switches "-l --almost-all --ignore-backups --group-directories-first"))
+    (setq insert-directory-program "/usr/local/bin/gls"))
   
   (dirvish-override-dired-mode)
 
@@ -162,6 +161,7 @@
   (dirvish-reuse-session nil)
   (dirvish-subtree-state-style 'nerd)
   (dirvish-attributes '(nerd-icons subtree-state file-size file-time))
+  (dired-listing-switches "-l --almost-all --ignore-backups --group-directories-first")
 
   :bind (("C-x d" . dirvish-dwim)
 	 ("C-x C-d" . dirvish-dwim))
