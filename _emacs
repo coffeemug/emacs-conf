@@ -286,3 +286,11 @@
   :ensure nil
   :custom
   (uniquify-buffer-name-style 'forward))
+
+(use-package sendmail
+  ;; authentication goes to ~/.authinfo
+  :ensure nil
+  :custom
+  (send-mail-function 'smtpmail-send-it)
+  (smtpmail-smtp-server "smtp.gmail.com")
+  (smtpmail-smtp-service 587))
