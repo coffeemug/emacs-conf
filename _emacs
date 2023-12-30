@@ -16,6 +16,8 @@
   (initial-scratch-message "")
   (sentence-end-double-space nil)
   (completion-styles '(flex))
+  (frame-inhibit-implied-resize t)
+  (backup-directory-alist . (concat user-emacs-directory "backup"))
 
   :config
   (add-to-list 'load-path "~/emacs-conf/")
@@ -105,6 +107,7 @@
   :demand t
   :init
   (recentf-mode)
+  (savehist-mode)
 
   :config
   (fset 'vanilla-grep #'grep)
@@ -273,3 +276,13 @@
   :hook ((c-ts-mode . eglot-ensure)
 	 (c++-ts-mode . eglot-ensure)
 	 (c-or-c++-ts-mode . eglot-ensure)))
+
+(use-package eglot-x
+  :demand t
+  :load-path "~/eglot-x"
+  :config (eglot-x-setup))
+
+(use-package uniquify
+  :ensure nil
+  :custom
+  (uniquify-buffer-name-style 'forward))
