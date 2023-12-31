@@ -22,7 +22,7 @@
   (sentence-end-double-space nil)
   (completion-styles '(flex))
   (frame-inhibit-implied-resize t)
-  (backup-directory-alist . (concat user-emacs-directory "backup"))
+  (backup-directory-alist `(("." . ,(concat user-emacs-directory "backup"))))
   (tab-always-indent 'complete)
 
   :config
