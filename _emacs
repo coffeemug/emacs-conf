@@ -21,6 +21,7 @@
   (initial-scratch-message "")
   (sentence-end-double-space nil)
   (completion-styles '(flex))
+  (completion-ignore-case t)
   (frame-inhibit-implied-resize t)
   (backup-directory-alist `(("." . ,(concat user-emacs-directory "backup"))))
   (tab-always-indent 'complete)
