@@ -9,6 +9,10 @@
 (use-package emacs
   :ensure nil
 
+  :init
+  (recentf-mode)
+  (savehist-mode)
+
   :custom
   (frame-title-format "%b")
   (ring-bell-function 'ignore)
@@ -18,6 +22,7 @@
   (completion-styles '(flex))
   (frame-inhibit-implied-resize t)
   (backup-directory-alist . (concat user-emacs-directory "backup"))
+  (tab-always-indent 'complete)
 
   :config
   (add-to-list 'load-path "~/emacs-conf/")
@@ -29,6 +34,7 @@
   (defalias 'yes-or-no-p 'y-or-n-p)
   (defun display-startup-echo-area-message ()
     (message "Let the hacking begin!"))
+  (toggle-text-mode-auto-fill)
 
   (when (display-graphic-p)
     (tool-bar-mode 0)
@@ -80,12 +86,30 @@
 (use-package corfu
   :init
   (global-corfu-mode)
+  (corfu-popupinfo-mode)
+  (corfu-history-mode)
   
   :custom
   (corfu-auto t)
+  (corfu-popupinfo-delay '(nil . 1.0))
+  (corfu-preselect 'prompt)
+
+  :config
+  (add-to-list 'savehist-additional-variables 'corfu-history)
 
   :hook
-  ((before-save . corfu-quit)))
+  ((before-save . corfu-quit))
+
+  :bind
+  (:map corfu-map
+        ("TAB" . corfu-next)
+        ([tab] . corfu-next)
+        ("S-TAB" . corfu-previous)
+        ([backtab] . corfu-previous)))
+
+(use-package nerd-icons-corfu
+  :config
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 ;; Configure completion
 (use-package ido
@@ -105,9 +129,6 @@
 
 (use-package consult
   :demand t
-  :init
-  (recentf-mode)
-  (savehist-mode)
 
   :config
   (fset 'vanilla-grep #'grep)
@@ -294,3 +315,4 @@
   (send-mail-function 'smtpmail-send-it)
   (smtpmail-smtp-server "smtp.gmail.com")
   (smtpmail-smtp-service 587))
+
