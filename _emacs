@@ -12,6 +12,7 @@
   :init
   (recentf-mode)
   (savehist-mode)
+  (global-prettify-symbols-mode)
 
   :custom
   (frame-title-format "%b")
