@@ -328,7 +328,7 @@
   :ensure nil
 
   :config
-  (plist-put org-format-latex-options :scale 1.5)
+  (plist-put org-format-latex-options :scale 1.65)
   
   :custom
   (org-preview-latex-default-process 'dvisvgm)
