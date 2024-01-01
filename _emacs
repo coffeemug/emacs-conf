@@ -197,7 +197,9 @@
  	      ("k" . dired-previous-line)
  	      ("j" . dired-next-line)
 	      ("<backspace>" . dired-up-directory)
+	      ("<backtab>" . dired-up-directory)
 	      ("RET" . dired-find-file)
+	      ("TAB" . dired-find-file)
 	      ("/" . isearch-forward-regexp)
 	      ("C-o" . other-window)
 	      ("s" . dirvish-quicksort))
@@ -317,4 +319,21 @@
   (send-mail-function 'smtpmail-send-it)
   (smtpmail-smtp-server "smtp.gmail.com")
   (smtpmail-smtp-service 587))
+
+(use-package exec-path-from-shell
+  :if (eq system-type 'darwin)
+  :init (exec-path-from-shell-initialize))
+
+(use-package org
+  :ensure nil
+
+  :config
+  (plist-put org-format-latex-options :scale 1.5)
+  
+  :custom
+  (org-preview-latex-default-process 'dvisvgm)
+  (org-preview-latex-image-directory (concat user-emacs-directory "ltximg/")))
+
+(use-package org-fragtog
+  :hook (org-mode . org-fragtog-mode))
 
