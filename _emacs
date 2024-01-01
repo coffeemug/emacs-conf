@@ -24,6 +24,7 @@
   (completion-ignore-case t)
   (frame-inhibit-implied-resize t)
   (backup-directory-alist `(("." . ,(concat user-emacs-directory "backup"))))
+  (custom-file (concat user-emacs-directory "custom.el"))
   (tab-always-indent 'complete)
 
   :config
