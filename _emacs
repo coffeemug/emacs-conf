@@ -342,6 +342,17 @@
   (org-preview-latex-default-process 'dvisvgm)
   (org-preview-latex-image-directory (concat user-emacs-directory "ltximg/"))
 
+  ;; style heading markup
+  ;; :hook (org-mode . (lambda ()
+  ;; 		      (font-lock-add-keywords
+  ;; 		       nil
+  ;; 		       '(("^\\*+ "
+  ;; 			  (0 (let ((level (- (match-end 0) (match-beginning 0) 1)))
+  ;; 			       (put-text-property (match-beginning 0)
+  ;; 						  (- (match-end 0) 1)
+  ;; 						  'face
+  ;; 						  'shadow))))))))
+  
   ;; style list bullet points
   :hook (org-mode . (lambda ()
 		      (font-lock-add-keywords
