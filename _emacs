@@ -343,15 +343,32 @@
   (org-preview-latex-image-directory (concat user-emacs-directory "ltximg/"))
 
   ;; style heading markup
-  ;; :hook (org-mode . (lambda ()
-  ;; 		      (font-lock-add-keywords
-  ;; 		       nil
-  ;; 		       '(("^\\*+ "
-  ;; 			  (0 (let ((level (- (match-end 0) (match-beginning 0) 1)))
-  ;; 			       (put-text-property (match-beginning 0)
-  ;; 						  (- (match-end 0) 1)
-  ;; 						  'face
-  ;; 						  'shadow))))))))
+  :config
+  (setq org-heading-markup-alpha-factor 0.5)
+
+  (defun blend-colors (color1 color2 alpha)
+    (apply 'color-rgb-to-hex
+           `(,@(cl-mapcar (lambda (x y) (+ (* x alpha) (* y (- 1 alpha))))
+			  (color-name-to-rgb color1)
+			  (color-name-to-rgb color2))
+	     2)))
+
+  (defun org-de-emphasized-face (level)
+    (let ((org-face (nth (1- (min level org-n-level-faces)) org-level-faces)))
+      `(:inherit ,org-face :foreground ,(blend-colors
+					 (face-foreground org-face nil t)
+					 (face-background 'default nil t)
+					 org-heading-markup-alpha-factor))))
+  
+  :hook (org-mode . (lambda ()
+  		      (font-lock-add-keywords
+  		       nil
+  		       '(("^\\(\\*+\\) "
+  			  (0 (let ((level (- (match-end 0) (match-beginning 0) 1)))
+  			       (put-text-property (match-beginning 0)
+  						  (- (match-end 0) 1)
+  						  'face
+  						  (org-de-emphasized-face level)))))))))
   
   ;; style list bullet points
   :hook (org-mode . (lambda ()
