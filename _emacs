@@ -395,6 +395,22 @@
 		       `((org-emphasis-markup-matcher
 			  (1 'shadow)
 			  (2 'shadow))))))
+
+  ;; org-capture setup
+  :custom
+  (org-capture-templates
+   '(("q" "Quote" entry (file "quotes.org")
+      "* %<%Y-%m-%d, %a %H:%M>\n%?"
+      :prepend t
+      :empty-lines-after 2
+      :kill-buffer t)
+     ("j" "Journal" entry (file "journal-2024.org")
+      "* %<%Y-%m-%d, %a %H:%M>\n%?"
+      :prepend t
+      :empty-lines-after 2
+      :kill-buffer t)))
+
+  :bind (("C-c c" . org-capture))
   )
 
 (use-package org-fragtog
