@@ -328,12 +328,40 @@
 (use-package org
   :ensure nil
 
+  ;; make latex rendering work nicely
   :config
   (plist-put org-format-latex-options :scale 1.65)
   
   :custom
   (org-preview-latex-default-process 'dvisvgm)
-  (org-preview-latex-image-directory (concat user-emacs-directory "ltximg/")))
+  (org-preview-latex-image-directory (concat user-emacs-directory "ltximg/"))
+
+  ;; style list bullet points
+  :hook (org-mode . (lambda ()
+		      (font-lock-add-keywords
+		       nil
+		       '(("^[[:space:]]*\\(-\\) " 1 'shadow)))))
+
+  ;; style emphasis markup
+  :config
+  (defun org-emphasis-markup-matcher (limit)
+    (let* ((ok (re-search-forward org-emph-re limit t))
+	   (start-pos (match-beginning 2))
+	   (end-pos (match-end 2)))
+      (when ok
+	(set-match-data
+	 (list start-pos end-pos
+	       start-pos (+ start-pos 1)
+	       (- end-pos 1) end-pos)))
+      ok))
+
+  :hook (org-mode . (lambda ()
+		      (font-lock-add-keywords
+		       nil
+		       `((org-emphasis-markup-matcher
+			  (1 'shadow)
+			  (2 'shadow))))))
+  )
 
 (use-package org-fragtog
   :hook (org-mode . org-fragtog-mode))
