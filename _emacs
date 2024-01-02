@@ -328,6 +328,12 @@
 (use-package org
   :ensure nil
 
+  ;; general stuff
+  :custom
+  (org-directory "~/Dropbox/Org")
+  (org-default-notes-file (concat org-directory "default.org"))
+  (org-startup-folded 'overview)
+
   ;; make latex rendering work nicely
   :config
   (plist-put org-format-latex-options :scale 1.65)
