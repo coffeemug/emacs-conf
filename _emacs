@@ -10,6 +10,7 @@
   :ensure nil
 
   :init
+  (add-to-list 'recentf-exclude "ido\\.last\\'")
   (recentf-mode)
   (savehist-mode)
   (global-prettify-symbols-mode)
