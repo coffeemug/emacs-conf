@@ -95,7 +95,13 @@
     (let ((default-directory org-directory))
       (ido-find-file)))
 
+  (defun jump-to-todo-file ()
+    (interactive)
+    (find-file
+     (concat org-directory "todo.org")))
+
   :bind (("C-c j ." . jump-to-init-file)
+	 ("C-c j d" . jump-to-todo-file)
 	 ("C-c j o" . find-org-file))
   )
 
@@ -347,7 +353,7 @@
 
   ;; general stuff
   :custom
-  (org-directory "~/Dropbox/Org")
+  (org-directory "~/Dropbox/Org/")
   (org-default-notes-file (concat org-directory "default.org"))
   (org-startup-folded 'overview)
 
