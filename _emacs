@@ -416,7 +416,17 @@
 	   :empty-lines-after 2
 	   :kill-buffer t)))
 
-  (setq org-capture-templates-work nil)
+  (setq org-capture-templates-work
+	`(("a" "Accomplished" item (file+olp+datetree "accomplishments.org")
+	   "%?"
+	   :tree-type week
+	   :empty-lines-after 2
+	   :kill-buffer t)
+	  ("m" "Meeting" entry (file+olp+datetree "meetings.org")
+	   "* %<%H:%M>, %?"
+	   :tree-type week
+	   :empty-lines-after 2
+	   :kill-buffer t)))
 
   :custom
   (org-capture-templates
