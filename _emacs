@@ -103,7 +103,8 @@
 
   :bind (("C-c j ." . jump-to-init-file)
 	 ("C-c j d" . jump-to-todo-file)
-	 ("C-c j o" . find-org-file))
+	 ("C-c j o" . find-org-file)
+	 ("C-c j s" . scratch-buffer))
   )
 
 (use-package doom-themes
