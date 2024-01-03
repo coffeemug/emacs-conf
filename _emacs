@@ -10,8 +10,8 @@
   :ensure nil
 
   :init
-  (add-to-list 'recentf-exclude "ido\\.last\\'")
   (recentf-mode)
+  (add-to-list 'recentf-exclude "ido\\.last\\'")
   (savehist-mode)
   (global-prettify-symbols-mode)
 
@@ -81,7 +81,23 @@
           (emacs-lisp-docstring-fill-column t))
       (fill-paragraph nil region)))
 
-  :bind (("C-q" . unfill-paragraph)))
+  :bind (("C-q" . unfill-paragraph))
+
+  ;; frequent shortcuts
+  :config
+  (defun jump-to-init-file ()
+    (interactive)
+    (find-file
+     (file-truename user-init-file)))
+
+  (defun find-org-file ()
+    (interactive)
+    (let ((default-directory org-directory))
+      (ido-find-file)))
+
+  :bind (("C-c j ." . jump-to-init-file)
+	 ("C-c j o" . find-org-file))
+  )
 
 (use-package doom-themes
   :config
