@@ -51,7 +51,8 @@
     (setq mac-command-modifier 'meta))
   
   (when (eq system-type 'windows-nt)
-    (set-face-attribute 'default nil :font "Consolas-10"))
+    (set-face-attribute 'default nil :font "Consolas-10")
+    (bind-key "C-x <end>" #'eval-last-sexp))
   
   :bind (("C-o" . other-window))
 
