@@ -201,6 +201,9 @@
   :config
   (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 
+(use-package doom-modeline
+  :config (doom-modeline-mode 1))
+
 (use-package dirvish
   :config
   (when (eq system-type 'darwin)
@@ -214,6 +217,8 @@
   (dirvish-subtree-state-style 'nerd)
   (dirvish-attributes '(nerd-icons subtree-state file-size file-time))
   (dired-listing-switches "-l --almost-all --ignore-backups --group-directories-first")
+  (dirvish-mode-line-height doom-modeline-height)
+  (dirvish-header-line-height doom-modeline-height)
 
   :bind (("C-x d" . dirvish-dwim)
 	 ("C-x C-d" . dirvish-dwim))
@@ -274,17 +279,12 @@
     (interactive)
     (dired-jump nil (ido-read-directory-name "Find dir: ")))
   :bind (:map dirvish-mode-map
-	      ("C-x C-f" . jump-to-directory)
-	      ("C-x d" . jump-to-directory)
-	      ("C-x C-d" . jump-to-directory))
+	      ("C-d" . jump-to-directory))
   )
 
 (use-package which-key
   :config
   (which-key-mode))
-
-(use-package doom-modeline
-  :config (doom-modeline-mode 1))
 
 (use-package magit)
 
