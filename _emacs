@@ -429,20 +429,24 @@
   :ensure nil
 
   :init
-  (setq org-capture-templates-home
-	`(("q" "Quote" entry (file "quotes.org")
+  (setq org-capture-templates-shared
+	`(("s" "Shoebox" entry (file "shoebox.org")
 	   "* %<%Y-%m-%d, %a %H:%M>\n%?"
 	   :prepend t
 	   :empty-lines-after 2
-	   :kill-buffer t)
-	  ("j" "Journal" entry (file ,(format-time-string "journal-%Y.org"))
+	   :kill-buffer t)))
+
+  (setq org-capture-templates-home
+	`(,@org-capture-templates-shared
+	  ("t" "Quote" entry (file "quotes.org")
 	   "* %<%Y-%m-%d, %a %H:%M>\n%?"
 	   :prepend t
 	   :empty-lines-after 2
 	   :kill-buffer t)))
 
   (setq org-capture-templates-work
-	`(("a" "Accomplished" item (file+olp+datetree "accomplishments.org")
+	`(,@org-capture-templates-shared
+	  ("d" "Done" item (file+olp+datetree "done.org")
 	   "%?"
 	   :tree-type week
 	   :empty-lines-after 2
