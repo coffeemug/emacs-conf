@@ -446,7 +446,7 @@
 
   (setq org-capture-templates-work
 	`(,@org-capture-templates-shared
-	  ("d" "Done" item (file+olp+datetree "done.org")
+	  ("a" "Achieved" item (file+olp+datetree "achieved.org")
 	   "%?"
 	   :tree-type week
 	   :empty-lines-after 2
