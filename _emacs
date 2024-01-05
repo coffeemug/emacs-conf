@@ -359,6 +359,7 @@
   (org-default-notes-file (concat org-directory "default.org"))
   (org-startup-folded 'overview)
   (org-fontify-done-headline nil)
+  (org-highlight-latex-and-related '(native))
 
   ;; make latex rendering work nicely
   :custom
