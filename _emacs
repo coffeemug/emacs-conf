@@ -358,11 +358,15 @@
   (org-directory "~/Dropbox/Org/")
   (org-default-notes-file (concat org-directory "default.org"))
   (org-startup-folded 'overview)
+  (org-fontify-done-headline nil)
 
   ;; make latex rendering work nicely
   :config
   (plist-put org-format-latex-options :scale 1.65)
-  
+  (defun org-preview-latex-all ()
+    (interactive)
+    (org-latex-preview '(16)))
+  :hook (org-mode . org-preview-latex-all)
   :custom
   (org-preview-latex-default-process 'dvisvgm)
   (org-preview-latex-image-directory (concat user-emacs-directory "ltximg/"))
@@ -395,11 +399,12 @@
   						  'face
   						  (org-de-emphasized-face level)))))))))
   
-  ;; style list bullet points
+  ;; style list bullet points and horizontal separators
   :hook (org-mode . (lambda ()
 		      (font-lock-add-keywords
 		       nil
-		       '(("^[[:space:]]*\\(-\\) " 1 'shadow)))))
+		       '(("^[[:space:]]*\\(-\\) " 1 'shadow)
+			 ("^-\\{5,\\}" 0 'shadow)))))
 
   ;; style emphasis markup
   :config
@@ -465,6 +470,20 @@
 
   :bind (("C-c c" . org-capture))
   )
+
+(use-package org-ql
+  :config
+  (defun org-fold-done-headings ()
+    (interactive)
+    (org-with-wide-buffer
+     (dolist (headline (org-ql-query :select 'element
+                                     :from (current-buffer)
+                                     :where '(or (done))  
+                                     :order-by 'date))
+       (let ((start (org-element-property :begin headline)))
+	 (goto-char start)
+	 (outline-hide-subtree)))))
+  :hook (org-mode . org-fold-done-headings))
 
 ;; Some useful general-purpose functions
 (defun is-work-p ()
