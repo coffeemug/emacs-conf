@@ -361,15 +361,18 @@
   (org-fontify-done-headline nil)
 
   ;; make latex rendering work nicely
+  :custom
+  (org-preview-latex-default-process 'dvisvgm)
+  (org-preview-latex-image-directory (concat user-emacs-directory "ltximg/"))
+
   :config
   (plist-put org-format-latex-options :scale 1.65)
   (defun org-preview-latex-all ()
     (interactive)
     (org-latex-preview '(16)))
-  :hook (org-mode . org-preview-latex-all)
-  :custom
-  (org-preview-latex-default-process 'dvisvgm)
-  (org-preview-latex-image-directory (concat user-emacs-directory "ltximg/"))
+
+  :hook ((org-mode . org-preview-latex-all)
+	 (org-ctrl-c-ctrl-c . org-toggle-latex-fragment))
 
   ;; style heading markup
   :config
@@ -426,9 +429,6 @@
 			  (1 'shadow)
 			  (2 'shadow))))))
   )
-
-(use-package org-fragtog
-  :hook (org-mode . org-fragtog-mode))
 
 (use-package org-capture
   :ensure nil
