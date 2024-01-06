@@ -361,6 +361,7 @@
   (org-startup-folded 'overview)
   (org-fontify-done-headline nil)
   (org-highlight-latex-and-related '(native))
+  (org-todo-keyword-faces '(("CHECK" . org-warning)))
 
   ;; make latex rendering work nicely
   :custom
@@ -377,7 +378,7 @@
 
   :hook ((org-mode . org-preview-latex-all)
 	 (org-mode . org-electric-pair-dollar)
-	 (org-ctrl-c-ctrl-c . org-toggle-latex-fragment))
+	 (org-ctrl-c-ctrl-c-final . org-toggle-latex-fragment))
 
   ;; style heading markup
   :config
