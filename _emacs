@@ -133,7 +133,8 @@
         ("TAB" . corfu-next)
         ([tab] . corfu-next)
         ("S-TAB" . corfu-previous)
-        ([backtab] . corfu-previous)))
+        ([backtab] . corfu-previous)
+	("C-h" . corfu-popupinfo-toggle)))
 
 (use-package nerd-icons-corfu
   :config
