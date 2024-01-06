@@ -372,8 +372,11 @@
   (defun org-preview-latex-all ()
     (interactive)
     (org-latex-preview '(16)))
+  (defun org-electric-pair-dollar ()
+    (setq-local electric-pair-pairs (append electric-pair-pairs '((?$ . ?$)))))
 
   :hook ((org-mode . org-preview-latex-all)
+	 (org-mode . org-electric-pair-dollar)
 	 (org-ctrl-c-ctrl-c . org-toggle-latex-fragment))
 
   ;; style heading markup
