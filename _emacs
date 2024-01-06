@@ -30,6 +30,7 @@
 
   :config
   (add-to-list 'load-path "~/emacs-conf/")
+  (setq org-directory "~/Dropbox/Org/")
 
   (menu-bar-mode 0)
   (show-paren-mode t)
@@ -356,7 +357,6 @@
 
   ;; general stuff
   :custom
-  (org-directory "~/Dropbox/Org/")
   (org-default-notes-file (concat org-directory "default.org"))
   (org-startup-folded 'overview)
   (org-fontify-done-headline nil)
@@ -486,6 +486,32 @@
 	 (goto-char start)
 	 (outline-hide-subtree)))))
   :hook (org-mode . org-fold-done-headings))
+
+;; latex completion in org mode
+(use-package cape)
+(use-package math-symbol-lists
+  :config
+  (defun cape-latex ()
+    (let ((bounds (cape--bounds 'word))
+	  command-list)
+      (setf command-list
+	    (delete-dups
+	     (append
+	      (mapcar (lambda (cmd)
+			(concat "\\" cmd))
+		      math-symbol-list-latex-commands)
+	      (mapcar #'cadr math-symbol-list-basic)
+	      (mapcar #'cadr math-symbol-list-extended)
+	      (mapcar #'caddr math-symbol-list-packages))))
+      `(,(1- (car bounds)) ,(cdr bounds)
+	,(cape--properties-table
+	  command-list
+	  :category 'cape-latex)
+	:annotation-function (lambda (_) " TeX")
+	:exclusive 'no)))
+  (defun add-cape-latex-completion ()
+    (add-to-list 'completion-at-point-functions #'cape-latex))
+  :hook (org-mode . add-cape-latex-completion))
 
 ;; Some useful general-purpose functions
 (defun is-work-p ()
