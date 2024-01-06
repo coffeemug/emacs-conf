@@ -435,6 +435,13 @@
 			  (2 'shadow))))))
   )
 
+(use-package tex
+  :ensure auctex)
+
+(use-package cdlatex
+  :hook ((org-mode . turn-on-org-cdlatex)
+         (cdlatex-tab . LaTeX-indent-line)))
+
 (use-package org-capture
   :ensure nil
 
@@ -489,32 +496,6 @@
 	 (goto-char start)
 	 (outline-hide-subtree)))))
   :hook (org-mode . org-fold-done-headings))
-
-;; latex completion in org mode
-(use-package cape)
-(use-package math-symbol-lists
-  :config
-  (defun cape-latex ()
-    (let ((bounds (cape--bounds 'word))
-	  command-list)
-      (setf command-list
-	    (delete-dups
-	     (append
-	      (mapcar (lambda (cmd)
-			(concat "\\" cmd))
-		      math-symbol-list-latex-commands)
-	      (mapcar #'cadr math-symbol-list-basic)
-	      (mapcar #'cadr math-symbol-list-extended)
-	      (mapcar #'caddr math-symbol-list-packages))))
-      `(,(1- (car bounds)) ,(cdr bounds)
-	,(cape--properties-table
-	  command-list
-	  :category 'cape-latex)
-	:annotation-function (lambda (_) " TeX")
-	:exclusive 'no)))
-  (defun add-cape-latex-completion ()
-    (add-to-list 'completion-at-point-functions #'cape-latex))
-  :hook (org-mode . add-cape-latex-completion))
 
 ;; Some useful general-purpose functions
 (defun is-work-p ()
