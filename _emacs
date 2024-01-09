@@ -106,6 +106,11 @@
 	 ("C-c j d" . jump-to-todo-file)
 	 ("C-c j o" . find-org-file)
 	 ("C-c j s" . scratch-buffer))
+
+  ;; work stuff
+  :custom
+  (when (is-work-p)
+    (setq network-stream-use-client-certificates t))
   )
 
 (use-package doom-themes
