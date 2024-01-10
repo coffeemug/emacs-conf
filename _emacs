@@ -503,6 +503,8 @@
 	 (outline-hide-subtree)))))
   :hook (org-mode . org-fold-done-headings))
 
+(use-package markdown-mode)
+
 ;; Some useful general-purpose functions
 (defun is-work-p ()
   (file-exists-p
