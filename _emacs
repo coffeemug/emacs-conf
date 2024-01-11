@@ -505,6 +505,10 @@
 
 (use-package markdown-mode)
 
+(use-package restclient
+  :bind (:map restclient-mode-map
+	      ("C-c C-c" . restclient-http-send-current-stay-in-window)))
+
 ;; Some useful general-purpose functions
 (defun is-work-p ()
   (file-exists-p
