@@ -1,3 +1,8 @@
+(defun is-work-p ()
+  "Environment test"
+  (file-exists-p
+   (concat user-emacs-directory ".work")))
+
 (use-package package
   :config
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/")))
@@ -106,11 +111,6 @@
 	 ("C-c j d" . jump-to-todo-file)
 	 ("C-c j o" . find-org-file)
 	 ("C-c j s" . scratch-buffer))
-
-  ;; work stuff
-  :custom
-  (when (is-work-p)
-    (setq network-stream-use-client-certificates t))
   )
 
 (use-package doom-themes
@@ -506,10 +506,8 @@
 (use-package markdown-mode)
 
 (use-package restclient
+  :config
+  (when (is-work-p)
+    (setq network-stream-use-client-certificates t))
   :bind (:map restclient-mode-map
 	      ("C-c C-c" . restclient-http-send-current-stay-in-window)))
-
-;; Some useful general-purpose functions
-(defun is-work-p ()
-  (file-exists-p
-   (concat user-emacs-directory ".work")))
