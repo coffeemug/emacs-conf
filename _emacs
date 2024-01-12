@@ -1,3 +1,8 @@
+(defun is-work-p ()
+  "Environment test"
+  (file-exists-p
+   (concat user-emacs-directory ".work")))
+
 (use-package package
   :config
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/")))
@@ -497,7 +502,11 @@
 	 (outline-hide-subtree)))))
   :hook (org-mode . org-fold-done-headings))
 
-;; Some useful general-purpose functions
-(defun is-work-p ()
-  (file-exists-p
-   (concat user-emacs-directory ".work")))
+(use-package markdown-mode)
+
+(use-package restclient
+  :config
+  (when (is-work-p)
+    (setq network-stream-use-client-certificates t))
+  :bind (:map restclient-mode-map
+	      ("C-c C-c" . restclient-http-send-current-stay-in-window)))
