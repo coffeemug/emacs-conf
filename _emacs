@@ -360,24 +360,23 @@
   (org-default-notes-file (concat org-directory "default.org"))
   (org-startup-folded 'overview)
   (org-fontify-done-headline nil)
-  (org-highlight-latex-and-related '(native))
   (org-todo-keyword-faces '(("CHECK" . org-warning)))
 
   ;; make latex rendering work nicely
   :custom
+  (org-highlight-latex-and-related '(native))
   (org-preview-latex-default-process 'dvisvgm)
   (org-preview-latex-image-directory (concat user-emacs-directory "ltximg/"))
 
   :config
   (plist-put org-format-latex-options :scale 1.65)
-  (defun org-preview-latex-all ()
-    (interactive)
-    (org-latex-preview '(16)))
+  (add-to-list 'org-latex-packages-alist '("" "multicol" t))
+  (add-to-list 'org-latex-packages-alist '("paperwidth=5.8in, textwidth=5.8in" "geometry" t))
+
   (defun org-electric-pair-dollar ()
     (setq-local electric-pair-pairs (append electric-pair-pairs '((?$ . ?$)))))
 
-  :hook ((org-mode . org-preview-latex-all)
-	 (org-mode . org-electric-pair-dollar)
+  :hook ((org-mode . org-electric-pair-dollar)
 	 (org-ctrl-c-ctrl-c-final . org-toggle-latex-fragment))
 
   ;; style heading markup
