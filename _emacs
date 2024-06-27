@@ -211,93 +211,9 @@
 (use-package doom-modeline
   :config (doom-modeline-mode 1))
 
-(use-package dirvish
-  :config
-  (when (eq system-type 'darwin)
-    (setq insert-directory-program "/usr/local/bin/gls"))
-  
-  (dirvish-override-dired-mode)
-
-  :custom
-  (dired-isearch-filenames t)
-  (dirvish-reuse-session nil)
-  (dirvish-subtree-state-style 'nerd)
-  (dirvish-attributes '(nerd-icons subtree-state file-size file-time))
-  (dired-listing-switches "-l --almost-all --ignore-backups --group-directories-first")
-  (dirvish-mode-line-height doom-modeline-height)
-  (dirvish-header-line-height doom-modeline-height)
-
-  :bind (("C-x d" . dirvish-dwim)
-	 ("C-x C-d" . dirvish-dwim))
-  :bind (:map dirvish-mode-map
-	      ("q" . dirvish-quit)
-	      ("C-g" . dirvish-quit)
- 	      ("k" . dired-previous-line)
- 	      ("j" . dired-next-line)
-	      ("<backspace>" . dired-up-directory)
-	      ("<backtab>" . dired-up-directory)
-	      ("RET" . dired-find-file)
-	      ("TAB" . dired-find-file)
-	      ("/" . isearch-forward-regexp)
-	      ("C-o" . other-window)
-	      ("s" . dirvish-quicksort))
-
-  ;; toggle "boring" files
-  :config
-  (defun dired-omit-toggle-quiet ()
-    (interactive)
-    (dired-omit-mode (if dired-omit-mode -1 1)))
-  :custom
-  (dired-omit-files "\\`[.].*")
-  (dired-omit-verbose . nil)
-  :hook (dired-mode . dired-omit-mode)
-  :bind (:map dirvish-mode-map
-	      ("b" . dired-omit-toggle-quiet))
-
-  ;; subtrees
-  :custom
-  (dirvish-subtree-always-show-state t)
-  
-  :config
-  (defun dirvish-subtree-collapse ()
-    (interactive)
-    (when (dirvish-subtree--expanded-p)
-      (dired-next-line 1)
-      (dirvish-subtree-remove)))
-  
-  (defun dirvish-subtree-expand ()
-    (interactive)
-    (when (not (dirvish-subtree--expanded-p))
-      (condition-case err (dirvish-subtree--insert)
-	(file-error (dirvish-subtree--view-file))
-	(error (message "%s" (cdr err))))
-      ;; Expanding and collapsing subtrees doesn't respect the omit
-      ;; mode. So we need to reomit the file.
-      (when dired-omit-mode
-	(dired-omit-mode 1))))
-  
-  :bind (:map dirvish-mode-map
-	      ("<left>" . dirvish-subtree-collapse)
-	      ("<right>" . dirvish-subtree-expand))
-
-  ;; jump to directory from within dired
-  :config
-  (defun jump-to-directory ()
-    (interactive)
-    (dired-jump nil (ido-read-directory-name "Find dir: ")))
-  :bind (:map dirvish-mode-map
-	      ("C-d" . jump-to-directory))
-  )
-
 (use-package which-key
   :config
   (which-key-mode))
-
-(use-package magit)
-
-(use-package display-line-numbers
-  :ensure nil
-  :bind ("C-x C-l" . global-display-line-numbers-mode))
 
 (use-package embark
   :bind
@@ -367,23 +283,6 @@
   (org-fontify-done-headline nil)
   (org-todo-keyword-faces '(("CHECK" . org-warning)))
 
-  ;; make latex rendering work nicely
-  :custom
-  (org-highlight-latex-and-related '(native))
-  (org-preview-latex-default-process 'dvisvgm)
-  (org-preview-latex-image-directory (concat user-emacs-directory "ltximg/"))
-
-  :config
-  (plist-put org-format-latex-options :scale 1.65)
-  (add-to-list 'org-latex-packages-alist '("" "multicol" t))
-  (add-to-list 'org-latex-packages-alist '("paperwidth=5.8in, textwidth=5.8in" "geometry" t))
-
-  (defun org-electric-pair-dollar ()
-    (setq-local electric-pair-pairs (append electric-pair-pairs '((?$ . ?$)))))
-
-  :hook ((org-mode . org-electric-pair-dollar)
-	 (org-ctrl-c-ctrl-c-final . org-toggle-latex-fragment))
-
   ;; style heading markup
   :config
   (setq org-heading-markup-alpha-factor 0.5)
@@ -440,8 +339,23 @@
 			  (2 'shadow))))))
   )
 
-(use-package tex
-  :ensure auctex)
+(use-package pdf-tools)
+
+(use-package tex-mode
+  :ensure auctex
+
+  :mode ("\\.tex\\'" . LaTeX-mode)
+
+  :config
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq-default TeX-master nil)
+  (setq TeX-PDF-mode t)
+  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+	TeX-source-correlate-start-server t)
+  (setq TeX-command-default "pdflatex")
+
+  :hook (TeX-after-compilation-finished . TeX-revert-document-buffer))
 
 (use-package cdlatex
   :hook ((org-mode . turn-on-org-cdlatex)
@@ -488,20 +402,6 @@
   :bind (("C-c c" . org-capture))
   )
 
-(use-package org-ql
-  :config
-  (defun org-fold-done-headings ()
-    (interactive)
-    (org-with-wide-buffer
-     (dolist (headline (org-ql-query :select 'element
-                                     :from (current-buffer)
-                                     :where '(or (done))  
-                                     :order-by 'date))
-       (let ((start (org-element-property :begin headline)))
-	 (goto-char start)
-	 (outline-hide-subtree)))))
-  :hook (org-mode . org-fold-done-headings))
-
 (use-package markdown-mode)
 
 (use-package restclient
@@ -510,3 +410,13 @@
     (setq network-stream-use-client-certificates t))
   :bind (:map restclient-mode-map
 	      ("C-c C-c" . restclient-http-send-current-stay-in-window)))
+
+(use-package sgml-mode
+  :ensure nil
+  :custom
+  (sgml-basic-offset 2))
+
+(use-package css-mode
+  :ensure nil
+  :custom
+  (css-indent-offset 2))
