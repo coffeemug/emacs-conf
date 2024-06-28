@@ -15,10 +15,10 @@
   :ensure nil
 
   :init
-  (recentf-mode)
-  (add-to-list 'recentf-exclude "ido\\.last\\'")
   (savehist-mode)
   (global-prettify-symbols-mode)
+  (recentf-mode)
+  (add-to-list 'recentf-exclude "ido\\.last\\'")
 
   :custom
   (frame-title-format "%b")
@@ -339,26 +339,40 @@
 			  (2 'shadow))))))
   )
 
-(use-package pdf-tools)
+(use-package flycheck)
 
 (use-package tex-mode
   :ensure auctex
 
   :mode ("\\.tex\\'" . LaTeX-mode)
 
-  :config
-  (setq TeX-auto-save t)
-  (setq TeX-parse-self t)
-  (setq-default TeX-master nil)
-  (setq TeX-PDF-mode t)
-  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-	TeX-source-correlate-start-server t)
-  (setq TeX-command-default "pdflatex")
+  :custom
+  (TeX-save-query nil)
+  (TeX-auto-save t)
+  (TeX-parse-self t)
+  (TeX-master t)
+  (TeX-PDF-mode t)
+  (TeX-source-correlate-start-server t)
+  (TeX-source-correlate-mode t)
+  (font-latex-fontify-script nil)
 
-  :hook (TeX-after-compilation-finished . TeX-revert-document-buffer))
+  :config
+  (defun my/tex-set-viewer ()
+    "Set PDF viewer to Skim if available, otherwise use Preview."
+    (if (file-exists-p "/Applications/Skim.app")
+        (progn
+          (setq TeX-view-program-selection '((output-pdf "Skim")))
+          (setq TeX-view-program-list '(("Skim" "displayline -n -r -g %n %o %b"))))
+      (progn
+        (setq TeX-view-program-selection '((output-pdf "Preview")))
+        (setq TeX-view-program-list '(("Preview" "open -g -a Preview.app %o"))))))
+
+  (my/tex-set-viewer)
+
+  :hook (LaTeX-mode . flycheck-mode))
 
 (use-package cdlatex
-  :hook ((org-mode . turn-on-org-cdlatex)
+  :hook ((LaTeX-mode . turn-on-cdlatex)
          (cdlatex-tab . LaTeX-indent-line)))
 
 (use-package org-capture
