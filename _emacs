@@ -208,8 +208,18 @@
   :config
   (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 
+(use-package project
+  :ensure nil
+  :custom
+  (project-vc-extra-root-markers '(".project")))
+
 (use-package doom-modeline
-  :config (doom-modeline-mode 1))
+  :config
+  (doom-modeline-mode 1)
+  
+  :custom
+  (doom-modeline-project-detection 'project)
+  (doom-modeline-buffer-file-name-style 'auto))
 
 (use-package which-key
   :config
@@ -350,7 +360,7 @@
   (TeX-save-query nil)
   (TeX-auto-save t)
   (TeX-parse-self t)
-  (TeX-master t)
+  (TeX-master nil)
   (TeX-PDF-mode t)
   (TeX-source-correlate-start-server t)
   (TeX-source-correlate-mode t)
