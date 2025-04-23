@@ -439,3 +439,18 @@
   :ensure nil
   :custom
   (css-indent-offset 2))
+
+
+(use-package calc
+  :ensure nil
+
+  :init
+  (setq calc-display-trail nil)
+
+  :config
+  (doom-modeline-def-segment calc-buffer-info
+    mode-line-buffer-identification)
+
+  (doom-modeline-def-modeline 'calculator
+    '(window-number modals matches calc-buffer-info buffer-position)
+    '(misc-info minor-modes major-mode process)))
