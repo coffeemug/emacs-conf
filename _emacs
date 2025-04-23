@@ -261,11 +261,6 @@
 	 (c++-ts-mode . eglot-ensure)
 	 (c-or-c++-ts-mode . eglot-ensure)))
 
-(use-package eglot-x
-  :demand t
-  :load-path "~/eglot-x"
-  :config (eglot-x-setup))
-
 (use-package uniquify
   :ensure nil
   :custom
