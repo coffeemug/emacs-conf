@@ -254,8 +254,7 @@
 (use-package eglot
   :ensure nil
 
-  :custom
-  (eldoc-echo-area-use-multiline-p nil)
+  ;:custom (eldoc-echo-area-use-multiline-p nil)
   
   :hook ((c-ts-mode . eglot-ensure)
 	 (c++-ts-mode . eglot-ensure)
@@ -454,3 +453,9 @@
   (doom-modeline-def-modeline 'calculator
     '(window-number modals matches calc-buffer-info buffer-position)
     '(misc-info minor-modes major-mode process)))
+
+(use-package racket-mode
+  :hook
+  (racket-mode . racket-xp-mode)
+  (racket-mode . (lambda ()
+                   (push '("lambda" . ?λ) prettify-symbols-alist))))
