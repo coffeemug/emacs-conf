@@ -1,3 +1,4 @@
+
 (defun is-work-p ()
   "Environment test"
   (file-exists-p
@@ -458,4 +459,4 @@
   :hook
   (racket-mode . racket-xp-mode)
   (racket-mode . (lambda ()
-                   (push '("lambda" . ?λ) prettify-symbols-alist))))
+                   (push '("lambda" . ?\u03bb) prettify-symbols-alist))))
