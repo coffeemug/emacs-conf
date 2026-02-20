@@ -166,6 +166,9 @@
 (use-package consult
   :demand t
 
+  :custom
+  (consult-preview-key '(:debounce 0.4 any))
+
   :config
   (fset 'vanilla-grep #'grep)
   (fset 'grep #'consult-grep)
@@ -460,3 +463,8 @@
   (racket-mode . racket-xp-mode)
   (racket-mode . (lambda ()
                    (push '("lambda" . ?\u03bb) prettify-symbols-alist))))
+
+(use-package jit-lock
+  :ensure nil
+  :custom
+  (jit-lock-defer-time 0.1))
