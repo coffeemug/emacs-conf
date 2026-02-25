@@ -1,3 +1,4 @@
+
 (defun is-work-p ()
   "Environment test"
   (file-exists-p
@@ -164,6 +165,9 @@
 
 (use-package consult
   :demand t
+
+  :custom
+  (consult-preview-key '(:debounce 0.4 any))
 
   :config
   (fset 'vanilla-grep #'grep)
@@ -454,11 +458,16 @@
     '(window-number modals matches calc-buffer-info buffer-position)
     '(misc-info minor-modes major-mode process)))
 
+;;;; racket-mode. Needs jit-lock for eval reasons
 ;; (use-package racket-mode
 ;;   :hook
 ;;   (racket-mode . racket-xp-mode)
 ;;   (racket-mode . (lambda ()
-;;                    (push '("lambda" . ?λ) prettify-symbols-alist))))
+;;                    (push '("lambda" . ?\u03bb) prettify-symbols-alist))))
+;; (use-package jit-lock
+;;   :ensure nil
+;;   :custom
+;;   (jit-lock-defer-time 0.1))
 
 (use-package geiser
   :ensure t
