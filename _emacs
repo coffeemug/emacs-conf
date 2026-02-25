@@ -454,8 +454,20 @@
     '(window-number modals matches calc-buffer-info buffer-position)
     '(misc-info minor-modes major-mode process)))
 
-(use-package racket-mode
-  :hook
-  (racket-mode . racket-xp-mode)
-  (racket-mode . (lambda ()
-                   (push '("lambda" . ?λ) prettify-symbols-alist))))
+;; (use-package racket-mode
+;;   :hook
+;;   (racket-mode . racket-xp-mode)
+;;   (racket-mode . (lambda ()
+;;                    (push '("lambda" . ?λ) prettify-symbols-alist))))
+
+(use-package geiser
+  :ensure t
+  :hook (geiser-repl-mode . (lambda ()
+			      (pixel-scroll-precision-mode -1)
+			      (setq-local scroll-conservatively 101)))
+  :config
+  (setq geiser-active-implementations '(racket)))
+
+(use-package geiser-racket
+  :ensure t
+  :after geiser)
