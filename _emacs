@@ -167,7 +167,7 @@
   :demand t
 
   :custom
-  (consult-preview-key '(:debounce 0.4 any))
+  (consult-preview-key nil)
 
   :config
   (fset 'vanilla-grep #'grep)
