@@ -474,8 +474,13 @@
   :hook (geiser-repl-mode . (lambda ()
 			      (pixel-scroll-precision-mode -1)
 			      (setq-local scroll-conservatively 101)))
+
   :config
   (setq geiser-active-implementations '(racket)))
+
+(with-eval-after-load 'geiser-mode
+  (define-key geiser-mode-map (kbd "C-c <home>")
+	      #'geiser-mode-switch-to-repl-and-enter))
 
 (use-package geiser-racket
   :ensure t
