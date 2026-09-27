@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 
 (defun is-work-p ()
   "Environment test"
@@ -68,11 +69,7 @@
   (defun my-goto-match-beginning ()
     (when (and isearch-forward isearch-other-end)
       (goto-char isearch-other-end)))
-  (defadvice isearch-exit (after my-goto-match-beginning activate)
-    "Go to beginning of match."
-    (when (and isearch-forward isearch-other-end)
-      (goto-char isearch-other-end)))
-  
+
   :hook (isearch-mode-end . my-goto-match-beginning)
   
   :bind (("C-s" . isearch-forward-regexp)
@@ -349,40 +346,6 @@
 
 (use-package flycheck)
 
-(use-package tex-mode
-  :ensure auctex
-
-  :mode ("\\.tex\\'" . LaTeX-mode)
-
-  :custom
-  (TeX-save-query nil)
-  (TeX-auto-save t)
-  (TeX-parse-self t)
-  (TeX-master nil)
-  (TeX-PDF-mode t)
-  (TeX-source-correlate-start-server t)
-  (TeX-source-correlate-mode t)
-  (font-latex-fontify-script nil)
-
-  :config
-  (defun my/tex-set-viewer ()
-    "Set PDF viewer to Skim if available, otherwise use Preview."
-    (if (file-exists-p "/Applications/Skim.app")
-        (progn
-          (setq TeX-view-program-selection '((output-pdf "Skim")))
-          (setq TeX-view-program-list '(("Skim" "displayline -n -r -g %n %o %b"))))
-      (progn
-        (setq TeX-view-program-selection '((output-pdf "Preview")))
-        (setq TeX-view-program-list '(("Preview" "open -g -a Preview.app %o"))))))
-
-  (my/tex-set-viewer)
-
-  :hook (LaTeX-mode . flycheck-mode))
-
-(use-package cdlatex
-  :hook ((LaTeX-mode . turn-on-cdlatex)
-         (cdlatex-tab . LaTeX-indent-line)))
-
 (use-package org-capture
   :ensure nil
 
@@ -457,26 +420,3 @@
   (doom-modeline-def-modeline 'calculator
     '(window-number modals matches calc-buffer-info buffer-position)
     '(misc-info minor-modes major-mode process)))
-
-;;;; racket-mode. Needs jit-lock for eval reasons
-;; (use-package racket-mode
-;;   :hook
-;;   (racket-mode . racket-xp-mode)
-;;   (racket-mode . (lambda ()
-;;                    (push '("lambda" . ?\u03bb) prettify-symbols-alist))))
-;; (use-package jit-lock
-;;   :ensure nil
-;;   :custom
-;;   (jit-lock-defer-time 0.1))
-
-(use-package geiser
-  :ensure t
-  :hook (geiser-repl-mode . (lambda ()
-			      (pixel-scroll-precision-mode -1)
-			      (setq-local scroll-conservatively 101)))
-  :config
-  (setq geiser-active-implementations '(racket)))
-
-(use-package geiser-racket
-  :ensure t
-  :after geiser)
