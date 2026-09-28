@@ -1,10 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
 
-(defun is-work-p ()
-  "Environment test"
-  (file-exists-p
-   (concat user-emacs-directory ".work")))
-
 (use-package package
   :config
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/")))
@@ -34,16 +29,13 @@
   (backup-directory-alist `(("." . ,(concat user-emacs-directory "backup"))))
   (custom-file (concat user-emacs-directory "custom.el"))
   (tab-always-indent 'complete)
+  (use-short-answers t)
 
   :config
-  (add-to-list 'load-path "~/emacs-conf/")
   (setq org-directory "~/Dropbox/Org/")
 
   (menu-bar-mode 0)
-  (show-paren-mode t)
-  (transient-mark-mode t)
   (electric-pair-mode t)
-  (defalias 'yes-or-no-p 'y-or-n-p)
   (defun display-startup-echo-area-message ()
     (message "Let the hacking begin!"))
   (toggle-text-mode-auto-fill)
@@ -57,11 +49,7 @@
   ;; Platform specific
   (when (eq system-type 'darwin)
     (setq mac-command-modifier 'meta))
-  
-  (when (eq system-type 'windows-nt)
-    (set-face-attribute 'default nil :font "Consolas-10")
-    (bind-key "C-x <end>" #'eval-last-sexp))
-  
+
   :bind (("C-o" . other-window))
 
   ;; Specialize isearch
@@ -201,13 +189,9 @@
 (use-package nerd-icons)
 
 (use-package nerd-icons-completion
-  :if (featurep 'nerd-icons)
-  :config
-  (nerd-icons-completion-mode)
-
   :after marginalia
   :config
-  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+  (nerd-icons-completion-mode))
 
 (use-package project
   :ensure nil
@@ -344,45 +328,21 @@
 			  (2 'shadow))))))
   )
 
-(use-package flycheck)
-
 (use-package org-capture
   :ensure nil
 
-  :init
-  (setq org-capture-templates-shared
-	`(("s" "Shoebox" entry (file "shoebox.org")
-	   "* %<%Y-%m-%d, %a %H:%M>\n%?"
-	   :prepend t
-	   :empty-lines-after 2
-	   :kill-buffer t)))
-
-  (setq org-capture-templates-home
-	`(,@org-capture-templates-shared
-	  ("t" "Quote" entry (file "quotes.org")
-	   "* %<%Y-%m-%d, %a %H:%M>\n%?"
-	   :prepend t
-	   :empty-lines-after 2
-	   :kill-buffer t)))
-
-  (setq org-capture-templates-work
-	`(,@org-capture-templates-shared
-	  ("a" "Achieved" item (file+olp+datetree "achieved.org")
-	   "%?"
-	   :tree-type week
-	   :empty-lines-after 2
-	   :kill-buffer t)
-	  ("m" "Meeting" entry (file+olp+datetree "meetings.org")
-	   "* %<%H:%M>, %?"
-	   :tree-type week
-	   :empty-lines-after 2
-	   :kill-buffer t)))
-
   :custom
   (org-capture-templates
-   (if (is-work-p)
-       org-capture-templates-work
-     org-capture-templates-home))
+   '(("s" "Shoebox" entry (file "shoebox.org")
+      "* %<%Y-%m-%d, %a %H:%M>\n%?"
+      :prepend t
+      :empty-lines-after 2
+      :kill-buffer t)
+     ("t" "Quote" entry (file "quotes.org")
+      "* %<%Y-%m-%d, %a %H:%M>\n%?"
+      :prepend t
+      :empty-lines-after 2
+      :kill-buffer t)))
 
   :bind (("C-c c" . org-capture))
   )
@@ -390,9 +350,6 @@
 (use-package markdown-mode)
 
 (use-package restclient
-  :config
-  (when (is-work-p)
-    (setq network-stream-use-client-certificates t))
   :bind (:map restclient-mode-map
 	      ("C-c C-c" . restclient-http-send-current-stay-in-window)))
 
