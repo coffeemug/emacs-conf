@@ -221,20 +221,10 @@
   (embark-collect-mode . consult-preview-at-point-mode))
 
 (use-package treesit
-  :if (treesit-available-p)
-  :demand t
   :ensure nil
   :custom
-  (treesit-language-source-alist
-   '((cpp "https://github.com/tree-sitter/tree-sitter-cpp")
-     (c "https://github.com/tree-sitter/tree-sitter-c")))
-  (treesit-load-name-override-list
-   '((c++ "libtree-sitter-cpp")))
-  (major-mode-remap-alist
-   '((c-mode . c-ts-mode)
-     (c++-mode . c++-ts-mode)
-     (c-or-c++-mode . c-or-c++-ts-mode)))
-  )
+  (treesit-enabled-modes t)
+  (treesit-auto-install-grammar 'always))
 
 (use-package eglot
   :ensure nil
@@ -242,21 +232,12 @@
   ;:custom (eldoc-echo-area-use-multiline-p nil)
   
   :hook ((c-ts-mode . eglot-ensure)
-	 (c++-ts-mode . eglot-ensure)
-	 (c-or-c++-ts-mode . eglot-ensure)))
+	 (c++-ts-mode . eglot-ensure)))
 
 (use-package uniquify
   :ensure nil
   :custom
   (uniquify-buffer-name-style 'forward))
-
-(use-package sendmail
-  ;; authentication goes to ~/.authinfo
-  :ensure nil
-  :custom
-  (send-mail-function 'smtpmail-send-it)
-  (smtpmail-smtp-server "smtp.gmail.com")
-  (smtpmail-smtp-service 587))
 
 (use-package exec-path-from-shell
   :if (eq system-type 'darwin)
@@ -328,52 +309,9 @@
 			  (2 'shadow))))))
   )
 
-(use-package org-capture
-  :ensure nil
-
-  :custom
-  (org-capture-templates
-   '(("s" "Shoebox" entry (file "shoebox.org")
-      "* %<%Y-%m-%d, %a %H:%M>\n%?"
-      :prepend t
-      :empty-lines-after 2
-      :kill-buffer t)
-     ("t" "Quote" entry (file "quotes.org")
-      "* %<%Y-%m-%d, %a %H:%M>\n%?"
-      :prepend t
-      :empty-lines-after 2
-      :kill-buffer t)))
-
-  :bind (("C-c c" . org-capture))
-  )
-
 (use-package markdown-mode)
-
-(use-package restclient
-  :bind (:map restclient-mode-map
-	      ("C-c C-c" . restclient-http-send-current-stay-in-window)))
-
-(use-package sgml-mode
-  :ensure nil
-  :custom
-  (sgml-basic-offset 2))
 
 (use-package css-mode
   :ensure nil
   :custom
   (css-indent-offset 2))
-
-
-(use-package calc
-  :ensure nil
-
-  :init
-  (setq calc-display-trail nil)
-
-  :config
-  (doom-modeline-def-segment calc-buffer-info
-    mode-line-buffer-identification)
-
-  (doom-modeline-def-modeline 'calculator
-    '(window-number modals matches calc-buffer-info buffer-position)
-    '(misc-info minor-modes major-mode process)))
