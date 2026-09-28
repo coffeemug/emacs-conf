@@ -173,7 +173,7 @@
 		 'multi-category `(file . ,file))
 		items)))))
 
-  (plist-put consult--source-recent-file
+  (plist-put consult-source-recent-file
              :items #'gb/consult--source-recentf-items)
 
   :bind (
